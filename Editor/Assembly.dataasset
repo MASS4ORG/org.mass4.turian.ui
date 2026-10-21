@@ -1,0 +1,13 @@
+{
+  "__TypeId": "ca028d68-85a9-5f3d-ad2f-c54db757d6fa",
+  "Name": "Turian.Editor.UI",
+  "RootNamespace": "Turian.Editor.UI",
+  "Id": "a21e99bd-41be-7c18-a930-8c68a2da3a98",
+  "EditorOnly": true,
+  "AllowUnsafeCode": true,
+  "References": [
+    {
+      "AssetId": "11971431-4a1e-8187-e41e-9a08b6623bc8"
+    }
+  ]
+}

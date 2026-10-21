@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <Version>1.0.0</Version>
+        <TargetFramework>net10.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>disable</ImplicitUsings>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <RootNamespace>Turian.Editor.UI</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="$(TurianDir)Turian/Editor/Core/Turian.Editor.Core.csproj"/>
+        <ProjectReference Include="../Turian.Engine.UI/Turian.Engine.UI.csproj"/>
+    </ItemGroup>
+
+    <!-- The brick ships this assembly prebuilt in Brick~/Precast/editor, which only the editor loads. -->
+    <Target Name="PrecastEditorAssembly" AfterTargets="Build" Condition="'$(TargetFramework)' != ''">
+        <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(BrickDir)Brick~/Precast/editor"/>
+    </Target>
+
+    <ItemGroup>
+        <Compile Include="../../../Editor/**/*.cs" />
+    </ItemGroup>
+</Project>

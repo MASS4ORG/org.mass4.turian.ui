@@ -1,0 +1,8 @@
+{
+  "__TypeId": "ca028d68-85a9-5f3d-ad2f-c54db757d6fa",
+  "Name": "Turian.Engine.UI",
+  "RootNamespace": "Turian.Engine.UI",
+  "Id": "11971431-4a1e-8187-e41e-9a08b6623bc8",
+  "EditorOnly": false,
+  "AllowUnsafeCode": true
+}
