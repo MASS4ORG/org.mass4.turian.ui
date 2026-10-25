@@ -6,9 +6,8 @@ namespace Turian.Engine.UI;
 /// the root being drawn, and assigns the result to the renderer's overlay slot.
 /// </summary>
 /// <remarks>
-/// World-space panels are ignored here — they render to their own quads. Discovery is a tree
-/// walk each frame, which is cheap for the handful of panels a scene carries and avoids any
-/// registration-order coupling with the component lifecycle.
+/// World-space panels render to their own quads. The weak component registry avoids walking unrelated scene
+/// nodes; active membership and hierarchy order are evaluated for the known panels each frame.
 /// </remarks>
 public sealed class UiManager : IUiPresenter
 {
@@ -434,26 +433,7 @@ public sealed class UiManager : IUiPresenter
         return null;
     }
 
-    static void Collect(Node node, List<UiDocumentComponent> into)
-    {
-        if (!node.IsActive)
-        {
-            return;
-        }
-
-        foreach (var component in node.Components)
-        {
-            if (component is UiDocumentComponent ui)
-            {
-                into.Add(ui);
-            }
-        }
-
-        foreach (var child in node.Children)
-        {
-            Collect(child, into);
-        }
-    }
+    static void Collect(Node node, List<UiDocumentComponent> into) => UiDocumentComponent.Collect(node, into);
 
     /// <inheritdoc />
     public void Dispose()
