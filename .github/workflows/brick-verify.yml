@@ -11,6 +11,6 @@ permissions:
 
 jobs:
   brick:
-    uses: MASS4ORG/action-brick-release/.github/workflows/verify.yml@v1
+    uses: MASS4ORG/brick-workflows/.github/workflows/verify.yml@v1
     with:
       source-tests: Brick~/Tests/Turian.UI.Tests/Turian.UI.Tests.csproj
