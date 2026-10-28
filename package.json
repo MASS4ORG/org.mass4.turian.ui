@@ -1,6 +1,6 @@
 {
   "id": "org.mass4.turian.ui",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "displayName": "In-game UI",
   "description": "Guinevere-based .ui documents, .uss style sheets, data binding and screen and world-space panels.",
   "author": "MASS4",
@@ -14,7 +14,8 @@
     ".script-*.sh"
   ],
   "dependencies": {
-    "org.mass4.turian.vulkan": "builtin:org.mass4.turian.vulkan"
+    "org.mass4.turian.vulkan": "builtin:org.mass4.turian.vulkan",
+    "org.mass4.turian.ddd": "0.1.0"
   },
   "nuget": {
     "MASS4.Guinevere": "6.2.0",

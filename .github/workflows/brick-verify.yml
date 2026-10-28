@@ -13,4 +13,5 @@ jobs:
   brick:
     uses: MASS4ORG/brick-workflows/.github/workflows/verify.yml@v1
     with:
+      source-test-dependency: '{"repository":"MASS4ORG/org.mass4.turian.ddd","ref":"v0.1.0","path":"org.mass4.turian.ddd"}'
       source-tests: Brick~/Tests/Turian.UI.Tests/Turian.UI.Tests.csproj

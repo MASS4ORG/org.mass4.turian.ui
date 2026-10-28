@@ -4,12 +4,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-10-28
+
+- Added: DataAsset button events #55.
 - Changed: brick workflows and publisher secret setup.
-
 - Changed: cached UI component discovery.
-- Fixed: forward release environment secrets to the reusable workflow.
 
-## [1.0.2] - 2026-10-22
+## [1.1.0] - 2026-10-22
 
 - Fixed: sources and tests build in CI.
 

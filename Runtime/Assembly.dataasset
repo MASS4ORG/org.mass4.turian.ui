@@ -4,5 +4,10 @@
   "RootNamespace": "Turian.Engine.UI",
   "Id": "11971431-4a1e-8187-e41e-9a08b6623bc8",
   "EditorOnly": false,
-  "AllowUnsafeCode": true
+  "AllowUnsafeCode": true,
+  "References": [
+    {
+      "AssetId": "214a52ee-45aa-4757-a931-099c11e55a6e"
+    }
+  ]
 }

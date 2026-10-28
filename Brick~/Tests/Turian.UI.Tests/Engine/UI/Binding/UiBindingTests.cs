@@ -2,7 +2,7 @@ namespace Turian.Tests;
 
 /// <summary>Tests for the <c>.ui</c> data-binding engine: <see cref="MemberPath"/>,
 /// <see cref="ValueConverters"/>, one-/two-way bindings and <see cref="UiController"/>.</summary>
-public sealed class UiBindingTests
+public sealed partial class UiBindingTests
 {
     const int w = 160;
     const int h = 100;

@@ -78,6 +78,9 @@ public class UiDocumentComponent : Component
     /// <summary>The <c>.ui</c> document this panel renders. Empty when the UI is supplied via <see cref="OnBuild"/>.</summary>
     public AssetReference<UiDocumentAsset> Document { get; set; } = new();
 
+    /// <summary>Hydrated variable and event assets available to asset://GUID bindings in this document.</summary>
+    public List<DataAsset> DataAssets { get; set; } = [];
+
     /// <summary>
     /// Extra <c>.uss</c> stylesheets applied on top of the ones the document declares with
     /// <c>&lt;Style src&gt;</c>, lowest priority first.

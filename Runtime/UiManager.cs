@@ -325,6 +325,8 @@ public sealed class UiManager : IUiPresenter
             renderer.Bind(controller: controller);
         }
 
+        renderer.BindDataAssets(panel.DataAssets);
+        renderer.BindButtons(panel.Node?.Components.OfType<ButtonComponent>() ?? []);
         var entry = new CachedRenderer(panel.Document.AssetId, key, renderer, controller);
         renderers[panel.Id] = entry;
         return entry;

@@ -95,17 +95,20 @@ public sealed partial class UiRenderer
     void WriteBinding(UiElement el, string attribute, object? value)
     {
         var b = el.AttributeBindings.FirstOrDefault(x => x.TargetAttribute == attribute);
-        if (b is null || b.Expression.Mode != BindingMode.TwoWay || bindingContext is null)
+        if (b is null || b.Expression.Mode != BindingMode.TwoWay)
         {
             return;
         }
 
         var converter = ValueConverters.Get(b.Expression.Converter);
-        bindingContext.TrySet(b.Expression.Path, converter is null ? value : converter.ConvertBack(value));
+        var converted = converter is null ? value : converter.ConvertBack(value);
+        if (!WriteDataAsset(b.Expression.Path, converted)) { bindingContext?.TrySet(b.Expression.Path, converted); }
     }
 
     object? ResolvePath(string path)
     {
+        if (ReadDataAsset(path, out var assetValue)) { return assetValue; }
+
         foreach (var (alias, item) in repeatScope)
         {
             if (path == alias)
@@ -131,6 +134,12 @@ public sealed partial class UiRenderer
 
     void Fire(UiElement el, string eventName)
     {
+        if (eventName == "click" && buttons.TryGetValue(el, out var button)) { button.Click(); return; }
+        if (el.Events.TryGetValue(eventName, out var identity) && AssetId(identity, out var id))
+        {
+            if (dataAssets.GetValueOrDefault(id) is DataAssetEvent channel) { channel.Raise(); }
+            return;
+        }
         if (el.Events.TryGetValue(eventName, out var method) && Handlers.TryGetValue(method, out var action))
         {
             action();

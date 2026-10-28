@@ -23,6 +23,10 @@
         <InternalsVisibleTo Include="Turian.UI.Tests"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <ProjectReference Include="$(BrickDir)../org.mass4.turian.ddd/Brick~/Source/Turian.Engine.DataAssetDriven/Turian.Engine.DataAssetDriven.csproj"/>
+    </ItemGroup>
+
     <!-- Internal libraries -->
     <ItemGroup>
         <ProjectReference Include="$(TurianDir)Turian/Engine/Core/Turian.Engine.Core.csproj"/>

@@ -123,6 +123,7 @@ public sealed partial class UiRenderer
 
     void RenderElement(Gui gui, UiElement el)
     {
+        if (buttons.TryGetValue(el, out var button) && !button.IsVisible) { return; }
         if (el.Instance is { } instance)
         {
             RenderInstance(gui, instance);
@@ -135,14 +136,35 @@ public sealed partial class UiRenderer
             return;
         }
 
+        RenderWidget(gui, el);
+    }
+
+    void RenderWidget(Gui gui, UiElement el)
+    {
         switch (el.Tag)
         {
             case "Label": RenderLabel(gui, el); break;
             case "Button": RenderButton(gui, el); break;
             case "Image": RenderImage(gui, el); break;
+            default: RenderInput(gui, el); break;
+        }
+    }
+
+    void RenderInput(Gui gui, UiElement el)
+    {
+        switch (el.Tag)
+        {
             case "ImageButton": RenderImageButton(gui, el); break;
             case "TextField": RenderTextField(gui, el); break;
             case "Toggle": RenderToggle(gui, el); break;
+            default: RenderLayout(gui, el); break;
+        }
+    }
+
+    void RenderLayout(Gui gui, UiElement el)
+    {
+        switch (el.Tag)
+        {
             case "ScrollView": RenderScrollView(gui, el); break;
             case "Tabs": RenderTabs(gui, el); break;
             default: RenderContainer(gui, el); break;

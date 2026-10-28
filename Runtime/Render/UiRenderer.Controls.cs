@@ -51,7 +51,7 @@ public sealed partial class UiRenderer
             LogRect(gui, el, node);
             DrawBackground(gui, el);
 
-            var clicked = gui.Pass == Pass.Pass2Render && gui.GetInteractable().OnClick();
+            var clicked = IsEnabled(el) && gui.Pass == Pass.Pass2Render && gui.GetInteractable().OnClick();
             DrawLabel(gui, el, text);
 
             if (clicked)
@@ -129,7 +129,8 @@ public sealed partial class UiRenderer
         }
     }
 
-    static bool IsEnabled(UiElement el) => !UiValue.TryBool(Attr(el, "enabled"), out var enabled) || enabled;
+    bool IsEnabled(UiElement el) => (!UiValue.TryBool(Attr(el, "enabled"), out var enabled) || enabled)
+        && (!buttons.TryGetValue(el, out var button) || button.IsEnabled);
 
     SKImage ButtonImage(UiElement el, string attribute, SKImage normal) => ResolveImage(el, attribute) ?? normal;
 
@@ -295,7 +296,7 @@ public sealed partial class UiRenderer
             LogRect(gui, el, node);
             DrawBackground(gui, el);
 
-            var clicked = gui.Pass == Pass.Pass2Render && gui.GetInteractable().OnClick();
+            var clicked = IsEnabled(el) && gui.Pass == Pass.Pass2Render && gui.GetInteractable().OnClick();
             DrawToggleMark(gui, el, on);
             DrawLabel(gui, el, ResolveTextAttribute(el, "label") ?? string.Empty);
 

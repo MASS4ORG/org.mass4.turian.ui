@@ -87,6 +87,7 @@ public sealed class UiBrickTests : IDisposable
 
         Assert.Contains("Turian.Engine.UI", manifest.PrecastAssemblies);
         Assert.Contains("Turian.Engine.Vulkan", manifest.PrecastAssemblies);
+        Assert.Contains("Turian.Engine.DataAssetDriven", manifest.PrecastAssemblies);
         Assert.DoesNotContain("Turian.Editor.UI", manifest.PrecastAssemblies);
     }
 
@@ -116,7 +117,15 @@ public sealed class UiBrickTests : IDisposable
 
     ResolvedPackage Install(string id)
     {
-        new ProjectManifest { Dependencies = { [id] = $"file:{TestBrick.Folder}" } }.Save(project);
+        var runtime = Path.GetFullPath(Path.Combine(TestBrick.Folder, "..", "org.mass4.turian.ddd"));
+        new ProjectManifest
+        {
+            Dependencies =
+            {
+                [id] = $"file:{TestBrick.Folder}",
+                ["org.mass4.turian.ddd"] = $"file:{runtime}"
+            }
+        }.Save(project);
         return ProjectPackages.Resolve(project).Packages.Single(p => p.Id == id);
     }
 
