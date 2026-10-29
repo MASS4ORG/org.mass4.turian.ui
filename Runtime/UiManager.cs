@@ -289,6 +289,23 @@ public sealed class UiManager : IUiPresenter
             return null;
         }
 
+        if (LoadDocument(panel, db) is not { } loaded) { return null; }
+        var (docAsset, document) = loaded;
+
+        var key = SheetKeyFor(panel, document);
+        if (renderers.TryGetValue(panel.Id, out var cached)
+            && ReferenceEquals(cached.Panel, panel)
+            && cached.DocumentId == panel.Document.AssetId
+            && cached.SheetKey == key)
+        {
+            return cached;
+        }
+
+        return renderers[panel.Id] = CreateDocumentRenderer(panel, db, document, docAsset, key);
+    }
+
+    (UiDocumentAsset Asset, UiDocument Document)? LoadDocument(UiDocumentComponent panel, AssetDatabase db)
+    {
         var docAsset = panel.Document.Resolve(db);
         if (docAsset is null)
         {
@@ -303,14 +320,12 @@ public sealed class UiManager : IUiPresenter
             return null;
         }
 
-        var key = SheetKeyFor(panel, document);
-        if (renderers.TryGetValue(panel.Id, out var cached)
-            && cached.DocumentId == panel.Document.AssetId
-            && cached.SheetKey == key)
-        {
-            return cached;
-        }
+        return (docAsset, document);
+    }
 
+    CachedRenderer CreateDocumentRenderer(UiDocumentComponent panel, AssetDatabase db,
+        UiDocument document, UiDocumentAsset docAsset, string key)
+    {
         var renderer = new UiRenderer(document)
         {
             ImageResolver = new UiImageResolver(db).Resolve,
@@ -327,9 +342,7 @@ public sealed class UiManager : IUiPresenter
 
         renderer.BindDataAssets(panel.DataAssets);
         renderer.BindButtons(panel.Node?.Components.OfType<ButtonComponent>() ?? []);
-        var entry = new CachedRenderer(panel.Document.AssetId, key, renderer, controller);
-        renderers[panel.Id] = entry;
-        return entry;
+        return new CachedRenderer(panel, panel.Document.AssetId, key, renderer, controller);
     }
 
     string ResolveText(string? key, string? source)
@@ -458,5 +471,5 @@ public sealed class UiManager : IUiPresenter
     }
 
     sealed record CachedRenderer(
-        Guid DocumentId, string SheetKey, UiRenderer Renderer, UiController? Controller);
+        UiDocumentComponent Panel, Guid DocumentId, string SheetKey, UiRenderer Renderer, UiController? Controller);
 }

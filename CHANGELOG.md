@@ -4,6 +4,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+- Fixed: Rebind document renderers when switching between editor and Play scene instances.
+
 ## [1.2.0] - 2026-10-28
 
 - Added: DataAsset button events #55.

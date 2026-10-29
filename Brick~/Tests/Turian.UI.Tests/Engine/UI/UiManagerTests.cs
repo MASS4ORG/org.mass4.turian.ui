@@ -125,6 +125,74 @@ public sealed class UiManagerTests : IClassFixture<VulkanFixture>, IDisposable
         Assert.Equal(2, CountingController.Updates);
     }
 
+    /// <summary>Play copies keep component IDs but clicks must target the new session's hydrated assets.</summary>
+    [Fact]
+    public void PlayCopyRebindsButtonsAcrossSessions()
+    {
+        Assert.SkipUnless(fixture.Available, fixture.SkipReason);
+        var documentId = RegisterDocument("<UI><Button name=\"go\" text=\"Go\" width=\"120\" height=\"36\" /></UI>");
+        using var manager = new UiManager(fixture.Vulkan);
+        var panelId = Guid.NewGuid();
+        UiRenderer Resolve(DataAssetEvent channel)
+        {
+            var (_, panel) = Scene(new UiDocumentComponent
+            {
+                Id = panelId, Document = new(documentId), Assets = database,
+            }, new ButtonComponent { Element = "go", OnClick = [channel] });
+            var method = typeof(UiManager).GetMethod("ResolveDocumentBuilder",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!;
+            var cached = method.Invoke(manager, [panel])!;
+            return (UiRenderer)cached.GetType().GetProperty("Renderer")!.GetValue(cached)!;
+        }
+        _ = Resolve(new DataAssetEvent());
+        for (var i = 0; i < 2; i++)
+        {
+            using var session = new DataAssetSession();
+            var channel = new DataAssetEvent();
+            session.Attach(channel);
+            var calls = 0;
+            using var listener = channel.Subscribe(() => calls++);
+            var renderer = Resolve(channel);
+            Click(renderer);
+            Assert.Equal(1, calls);
+        }
+        _ = Resolve(new DataAssetEvent());
+    }
+
+    static void Click(UiRenderer renderer)
+    {
+        using var surface = SKSurface.Create(new SKImageInfo(160, 100));
+        var input = Substitute.For<IInputHandler>();
+        input.MousePosition.Returns(new Vector2(30, 15));
+        input.PrevMousePosition.Returns(new Vector2(30, 15));
+        input.IsMouseButtonPressed(Arg.Any<GMouseButton>()).Returns(true);
+        var gui = new Gui { Input = input };
+        var font = Font.FromFamilyName("sans-serif", 14);
+        gui.SetStage(Pass.Pass1Build);
+        gui.BeginFrame(surface.Canvas, font, font);
+        renderer.Render(gui);
+        gui.CalculateLayout();
+        gui.SetStage(Pass.Pass2Render);
+        renderer.Render(gui);
+        gui.Render();
+        gui.EndFrame();
+    }
+
+    /// <summary>Missing asset metadata or unreadable documents produce no renderer and can be retried.</summary>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void UnavailableDocumentDoesNotCreateRenderer(bool registered)
+    {
+        Assert.SkipUnless(fixture.Available, fixture.SkipReason);
+        var id = registered ? RegisterDocument("<UI>") : Guid.NewGuid();
+        var panel = new UiDocumentComponent { Document = new(id), Assets = database };
+        using var manager = new UiManager(fixture.Vulkan);
+        var resolve = typeof(UiManager).GetMethod("ResolveDocumentBuilder",
+            System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!;
+        Assert.Null(resolve.Invoke(manager, [panel]));
+    }
+
     /// <summary>A document reference that resolves to nothing draws nothing.</summary>
     [Fact]
     public void RenderOverlay_UnresolvedDocumentDrawsNothing()
