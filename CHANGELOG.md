@@ -4,6 +4,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [1.3.1] - 2026-11-04
+
+- Fixed: the type manifest test holds for source checkouts of the DataAsset-Driven dependency, which CI uses; 1.3.0 was tagged but never published.
+
 ## [1.3.0] - 2026-11-04
 
 - Changed: localized document text comes from the shared MASS4.Localization services; requires Turian 3.8 #344.

@@ -87,7 +87,14 @@ public sealed class UiBrickTests : IDisposable
 
         Assert.Contains("Turian.Engine.UI", manifest.PrecastAssemblies);
         Assert.Contains("Turian.Engine.Vulkan", manifest.PrecastAssemblies);
-        Assert.Contains("Turian.Engine.DataAssetDriven", manifest.PrecastAssemblies);
+        // The DataAsset-Driven dependency ships a precast assembly only after a Release build; a source checkout, as in
+        // CI, has none to list.
+        if (File.Exists(Path.Combine(TestBrick.Folder, "..", "org.mass4.turian.ddd", "Brick~", "Precast", "lib",
+                "Turian.Engine.DataAssetDriven.dll")))
+        {
+            Assert.Contains("Turian.Engine.DataAssetDriven", manifest.PrecastAssemblies);
+        }
+
         Assert.DoesNotContain("Turian.Editor.UI", manifest.PrecastAssemblies);
     }
 
