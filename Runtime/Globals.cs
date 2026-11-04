@@ -15,6 +15,7 @@ global using System.Xml.Linq;
 global using Guinevere;
 global using Ktx2;
 global using MASS4.Attributes;
+global using MASS4.Localization;
 global using Microsoft.Extensions.Logging;
 global using Silk.NET.Vulkan;
 global using SkiaSharp;

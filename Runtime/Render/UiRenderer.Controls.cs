@@ -370,10 +370,21 @@ public sealed partial class UiRenderer
 
     void RenderInstance(Gui gui, UiInstanceRef instance)
     {
-        if (!document.Templates.TryGetValue(instance.TemplateName, out var template))
+        if (ExpandInstance(instance) is { } expanded)
+        {
+            RenderElement(gui, expanded);
+        }
+        else
         {
             gui.DrawText($"<missing template '{instance.TemplateName}'>", 12, GuiColor.Red);
-            return;
+        }
+    }
+
+    UiElement? ExpandInstance(UiInstanceRef instance)
+    {
+        if (!document.Templates.TryGetValue(instance.TemplateName, out var template))
+        {
+            return null;
         }
 
         var cacheKey = instance.TemplateName + "|" +
@@ -391,7 +402,7 @@ public sealed partial class UiRenderer
             expandedTemplates[cacheKey] = expanded;
         }
 
-        RenderElement(gui, expanded);
+        return expanded;
     }
 
     void RenderRepeat(Gui gui, UiElement el, UiRepeat repeat)

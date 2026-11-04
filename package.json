@@ -18,6 +18,7 @@
     "org.mass4.turian.ddd": "^1.0.0"
   },
   "nuget": {
+    "MASS4.Localization.Abstractions": "3.8.0",
     "MASS4.Guinevere": "6.2.0",
     "MASS4.Guinevere.Styling": "6.2.0",
     "SkiaSharp": "4.153.1",

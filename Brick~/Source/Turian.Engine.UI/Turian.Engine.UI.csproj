@@ -15,8 +15,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="MASS4.Guinevere" Version="6.*" Condition="'$(GuinevereLocalPath)' == ''" />
-        <PackageReference Include="MASS4.Guinevere.Styling" Version="6.*" Condition="'$(GuinevereLocalPath)' == ''"/>
+        <!-- Exactly the versions package.json pins: the prebuilt assemblies must reference what games restore. -->
+        <PackageReference Include="MASS4.Guinevere" Version="[6.2.0]" Condition="'$(GuinevereLocalPath)' == ''" />
+        <PackageReference Include="MASS4.Guinevere.Styling" Version="[6.2.0]" Condition="'$(GuinevereLocalPath)' == ''"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -30,6 +31,7 @@
     <!-- Internal libraries -->
     <ItemGroup>
         <ProjectReference Include="$(TurianDir)Turian/Engine/Core/Turian.Engine.Core.csproj"/>
+        <ProjectReference Include="$(TurianDir)Turian/LocalizationAbstractions/MASS4.Localization.Abstractions.csproj"/>
         <ProjectReference Include="$(TurianDir)Turian/Packages/org.mass4.turian.vulkan/Source~/Turian.Engine.Vulkan/Turian.Engine.Vulkan.csproj"/>
     </ItemGroup>
 

@@ -17,6 +17,8 @@ public sealed partial class UiRenderer
     readonly Dictionary<string, object> state = new(StringComparer.Ordinal);
     readonly Dictionary<string, UiElement> expandedTemplates = new(StringComparer.Ordinal);
     readonly Stack<(string Alias, object? Item)> repeatScope = new();
+    readonly Dictionary<(string? Key, string? Source), string> preparedText = [];
+    Func<string?, string?, string>? textResolver;
 
     int autoKey;
 
@@ -42,7 +44,75 @@ public sealed partial class UiRenderer
     /// (or bound value) that doubles as the lookup key when no explicit key names one. Called for
     /// labels, button text, toggles, tab headers and field placeholders.
     /// </summary>
-    public Func<string?, string?, string>? TextResolver { get; set; }
+    public Func<string?, string?, string>? TextResolver
+    {
+        get => textResolver;
+        set
+        {
+            textResolver = value;
+            InvalidateText();
+        }
+    }
+
+    /// <summary>Forgets prepared text after the text source changes.</summary>
+    public void InvalidateText() => preparedText.Clear();
+
+    /// <summary>Prepares the document's current text before the rendering passes.</summary>
+    public void PrepareText() => PrepareElement(document.Root);
+
+    void PrepareElement(UiElement element)
+    {
+        if (element.Instance is { } instance)
+        {
+            if (ExpandInstance(instance) is { } expanded)
+            {
+                PrepareElement(expanded);
+            }
+            return;
+        }
+
+        if (element.Repeat is { } repeat)
+        {
+            if (DataResolver?.Invoke(repeat.ItemsPath) is not IEnumerable items || items is string)
+            {
+                return;
+            }
+            foreach (var item in items)
+            {
+                repeatScope.Push((repeat.ItemAlias, item));
+                try
+                {
+                    foreach (var child in element.Children) { PrepareElement(child); }
+                }
+                finally { repeatScope.Pop(); }
+            }
+            return;
+        }
+
+        var bound = element.AttributeBindings.FirstOrDefault(static b => b.TargetAttribute is "text");
+        var source = bound is not null
+            ? ResolveBinding(bound.Expression)?.ToString() ?? string.Empty
+            : Attr(element, "text") ?? element.Text;
+        PrepareValue(Attr(element, "text-key"), source);
+        foreach (var attribute in new[] { "label", "placeholder", "header" })
+        {
+            PrepareValue(Attr(element, $"{attribute}-key"), Attr(element, attribute));
+        }
+        foreach (var child in element.Children) { PrepareElement(child); }
+    }
+
+    void PrepareValue(string? key, string? source)
+    {
+        if (textResolver is null || (string.IsNullOrEmpty(key) && source is null)) { return; }
+        key = string.IsNullOrEmpty(key) ? null : key;
+        if (!preparedText.ContainsKey((key, source)))
+        {
+            preparedText.Add((key, source), textResolver(key, source));
+        }
+    }
+
+    string? PreparedValue(string? key, string? source) =>
+        preparedText.GetValueOrDefault((string.IsNullOrEmpty(key) ? null : key, source)) ?? source;
 
     /// <summary>
     /// <c>.uss</c> stylesheets to apply, lowest priority first. Populated from the document's

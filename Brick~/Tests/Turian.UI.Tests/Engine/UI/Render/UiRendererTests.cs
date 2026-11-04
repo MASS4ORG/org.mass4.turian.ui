@@ -9,6 +9,35 @@ public sealed class UiRendererTests
     const int w = 200;
     const int h = 120;
 
+    /// <summary>Text is resolved before either render pass and rebuilt when invalidated.</summary>
+    [Fact]
+    public void LocalizedTextIsPreparedBeforeRendering()
+    {
+        var calls = 0;
+        var rendering = false;
+        var pixels = Render("""
+            <UI xmlns="https://turian.mass4.org/ui"><Label text="Hello" /></UI>
+            """, renderer =>
+        {
+            renderer.TextResolver = (_, source) =>
+            {
+                Assert.False(rendering);
+                calls++;
+                return source + " translated";
+            };
+            renderer.PrepareText();
+            Assert.Equal(1, calls);
+            renderer.PrepareText();
+            Assert.Equal(1, calls);
+            renderer.InvalidateText();
+            renderer.PrepareText();
+            Assert.Equal(2, calls);
+            rendering = true;
+        });
+        Assert.NotEmpty(pixels);
+        Assert.Equal(2, calls);
+    }
+
     static byte[] Render(string ui, Action<UiRenderer>? configure = null, IInputHandler? input = null)
     {
         var document = UiXmlParser.Parse(ui);

@@ -4,6 +4,7 @@ global using System.Reflection;
 global using System.Text;
 global using System.Text.Json;
 global using MASS4.Bricks;
+global using MASS4.Localization;
 global using Guinevere;
 global using Ktx2;
 global using Microsoft.Extensions.Logging.Abstractions;

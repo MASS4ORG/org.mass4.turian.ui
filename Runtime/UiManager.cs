@@ -14,7 +14,26 @@ public sealed class UiManager : IUiPresenter
     readonly Vulkan vulkan;
     readonly IInputSource? inputSource;
     /// <summary>The locale used to draw UI documents for the current host/session.</summary>
-    public LocaleService? Locale { get; set; }
+    public ILocaleContext? Locale
+    {
+        get => locale;
+        set
+        {
+            if (ReferenceEquals(locale, value)) { return; }
+            if (locale is not null) { locale.LocaleChanged -= OnLocaleChanged; }
+            locale = value;
+            if (locale is not null) { locale.LocaleChanged += OnLocaleChanged; }
+            InvalidateText();
+        }
+    }
+    ILocaleContext? locale;
+
+    void OnLocaleChanged(string _) => InvalidateText();
+
+    void InvalidateText()
+    {
+        foreach (var renderer in renderers.Values) { renderer.Renderer.InvalidateText(); }
+    }
 
     /// <inheritdoc />
     public bool IsPlaying { get; set; }
@@ -29,8 +48,8 @@ public sealed class UiManager : IUiPresenter
     /// <summary>Creates the manager on the shared Vulkan context.</summary>
     /// <param name="vulkan">The context UI textures are created on.</param>
     /// <param name="inputSource">Input source, or <c>null</c> for neutral input.</param>
-    /// <param name="locale">Locale service, or <c>null</c> to display authored text.</param>
-    public UiManager(Vulkan vulkan, IInputSource? inputSource = null, LocaleService? locale = null)
+    /// <param name="locale">Locale context, or <c>null</c> to display authored text.</param>
+    public UiManager(Vulkan vulkan, IInputSource? inputSource = null, ILocaleContext? locale = null)
     {
         ArgumentNullException.ThrowIfNull(vulkan);
         this.vulkan = vulkan;
@@ -201,6 +220,7 @@ public sealed class UiManager : IUiPresenter
         }
 
         resolved.Controller?.OnUpdate(deltaTime);
+        resolved.Renderer.PrepareText();
         return resolved.Renderer.Render;
     }
 
@@ -459,6 +479,7 @@ public sealed class UiManager : IUiPresenter
         }
 
         disposed = true;
+        Locale = null;
         overlayRuntime?.Dispose();
         foreach (var wp in worldPanels.Values)
         {

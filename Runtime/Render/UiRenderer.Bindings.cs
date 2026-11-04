@@ -45,14 +45,8 @@ public sealed partial class UiRenderer
             ? ResolveBinding(bound.Expression)?.ToString() ?? string.Empty
             : Attr(el, "text") ?? el.Text;
 
-        var textResolver = TextResolver;
-        if (textResolver is null)
-        {
-            return source;
-        }
-
         var key = Attr(el, "text-key");
-        return textResolver(string.IsNullOrEmpty(key) ? null : key, source);
+        return PreparedValue(key, source);
     }
 
     /// <summary>
@@ -68,14 +62,8 @@ public sealed partial class UiRenderer
             return null;
         }
 
-        var textResolver = TextResolver;
-        if (textResolver is null)
-        {
-            return source;
-        }
-
         var key = Attr(el, $"{attribute}-key");
-        return textResolver(string.IsNullOrEmpty(key) ? null : key, source);
+        return PreparedValue(key, source);
     }
 
     /// <summary>The bound value for <paramref name="attribute"/> on <paramref name="el"/>, or <c>null</c> if unbound.</summary>

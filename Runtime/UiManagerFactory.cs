@@ -6,8 +6,8 @@ namespace Turian.Engine.UI;
 public sealed class UiManagerFactory : IUiPresenterFactory, IUiDocumentPreview
 {
     /// <inheritdoc/>
-    public IUiPresenter Create(Vulkan vulkan, IInputSource? input, LocaleService? locale) =>
-        new UiManager(vulkan, input, locale);
+    public IUiPresenter Create(Vulkan vulkan, IInputSource? input, IServiceProvider? services) =>
+        new UiManager(vulkan, input, services?.GetService(typeof(ILocaleContext)) as ILocaleContext);
 
     /// <inheritdoc/>
     public byte[] RenderPng(string documentPath, int width, int height, string? dataJson)
