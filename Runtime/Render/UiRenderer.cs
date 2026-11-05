@@ -193,7 +193,7 @@ public sealed partial class UiRenderer
 
     void RenderElement(Gui gui, UiElement el)
     {
-        if (buttons.TryGetValue(el, out var button) && !button.IsVisible) { return; }
+        if (el.Tag == tooltipTag || (buttons.TryGetValue(el, out var button) && !button.IsVisible)) { return; }
         if (el.Instance is { } instance)
         {
             RenderInstance(gui, instance);
@@ -206,7 +206,7 @@ public sealed partial class UiRenderer
             return;
         }
 
-        RenderWidget(gui, el);
+        RenderWithTooltip(gui, el);
     }
 
     void RenderWidget(Gui gui, UiElement el)
@@ -237,6 +237,7 @@ public sealed partial class UiRenderer
         {
             case "ScrollView": RenderScrollView(gui, el); break;
             case "Tabs": RenderTabs(gui, el); break;
+            case "ProgressBar": RenderProgressBar(gui, el); break;
             default: RenderContainer(gui, el); break;
         }
     }
