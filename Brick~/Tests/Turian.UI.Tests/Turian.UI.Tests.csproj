@@ -18,7 +18,6 @@
         <ProjectReference Include="../../Source/Turian.Engine.UI/Turian.Engine.UI.csproj"/>
         <ProjectReference Include="../../Source/Turian.Editor.UI/Turian.Editor.UI.csproj"/>
         <ProjectReference Include="$(TurianDir)Turian/Editor/Core/Turian.Editor.Core.csproj"/>
-        <ProjectReference Include="$(TurianDir)Turian/Localization/MASS4.Localization.csproj"/>
         <ProjectReference Include="$(TurianDir)Turian/Editor/CSharp/CodeGenerator/Turian.CSharp.CodeGenerator.csproj"
                           OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
     </ItemGroup>

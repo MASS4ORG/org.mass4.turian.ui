@@ -9,7 +9,20 @@ public sealed class BrickImporterTests : IDisposable
     public BrickImporterTests() => Directory.CreateDirectory(Path.Combine(project, "Assets"));
 
     /// <inheritdoc/>
-    public void Dispose() => Directory.Delete(project, recursive: true);
+    public void Dispose()
+    {
+        var options = new EnumerationOptions
+        {
+            RecurseSubdirectories = true,
+            AttributesToSkip = FileAttributes.ReparsePoint,
+        };
+        foreach (var path in Directory.EnumerateFiles(project, "*", options))
+        {
+            File.SetAttributes(path, File.GetAttributes(path) & ~FileAttributes.ReadOnly);
+        }
+
+        Directory.Delete(project, recursive: true);
+    }
 
     /// <summary>An importer built before the project opened still finds the importers of the project's bricks.</summary>
     [Fact]

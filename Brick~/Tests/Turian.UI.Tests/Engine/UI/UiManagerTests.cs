@@ -125,61 +125,16 @@ public sealed class UiManagerTests : IClassFixture<VulkanFixture>, IDisposable
         Assert.Equal(2, CountingController.Updates);
     }
 
-    /// <summary>A locale change invalidates prepared document text before the next frame.</summary>
-    [Fact]
-    public void LocaleChangeRebuildsDocumentText()
-    {
-        Assert.SkipUnless(fixture.Available, fixture.SkipReason);
-        var id = RegisterDocument("<UI><Label text=\"Hello\" /></UI>");
-        var locale = new LocaleService();
-        using var manager = new UiManager(fixture.Vulkan, locale: locale);
-        var (root, panel) = Scene(new UiDocumentComponent { Document = new(id), Assets = database });
-        var resolve = typeof(UiManager).GetMethod("ResolveDocumentBuilder",
-            BindingFlags.Instance | BindingFlags.NonPublic)!;
-        var cached = resolve.Invoke(manager, [panel])!;
-        var renderer = (UiRenderer)cached.GetType().GetProperty("Renderer")!.GetValue(cached)!;
-        var calls = 0;
-        renderer.TextResolver = (_, source) => { calls++; return source ?? string.Empty; };
-
-        Assert.NotNull(manager.RenderOverlay(root, 128, 64, 0.016f));
-        Assert.Equal(1, calls);
-        Assert.NotNull(manager.RenderOverlay(root, 128, 64, 0.016f));
-        Assert.Equal(1, calls);
-        locale.SetLocale("pt-BR");
-        Assert.NotNull(manager.RenderOverlay(root, 128, 64, 0.016f));
-        Assert.Equal(2, calls);
-    }
-
-    /// <summary>The interface factory uses the session's selected locale.</summary>
-    [Fact]
-    public void FactoryUsesSessionLocaleOverride()
-    {
-        Assert.SkipUnless(fixture.Available, fixture.SkipReason);
-        var locale = new LocaleService();
-        locale.SetLocale("pt-BR");
-        using var presenter = new UiManagerFactory().Create(fixture.Vulkan, null, new LocaleServices(locale));
-        Assert.Same(locale, Assert.IsType<UiManager>(presenter).Locale);
-        Assert.Equal("pt-BR", Assert.IsType<UiManager>(presenter).Locale!.ActiveLocale);
-    }
-
-    /// <summary>The factory takes the locale contract only: a provider holding just the concrete service yields none.</summary>
-    [Fact]
-    public void FactoryIgnoresTheConcreteLocaleService()
-    {
-        Assert.SkipUnless(fixture.Available, fixture.SkipReason);
-        using var presenter = new UiManagerFactory().Create(fixture.Vulkan, null, new ConcreteLocaleServices(new LocaleService()));
-        Assert.Null(Assert.IsType<UiManager>(presenter).Locale);
-    }
-
-    sealed class ConcreteLocaleServices(LocaleService locale) : IServiceProvider
-    {
-        public object? GetService(Type serviceType) => serviceType == typeof(LocaleService) ? locale : null;
-    }
-
-    sealed class LocaleServices(ILocaleContext locale) : IServiceProvider
-    {
-        public object? GetService(Type serviceType) => serviceType == typeof(ILocaleContext) ? locale : null;
-    }
+    /// <summary>Documents show their authored text; a key appears only when the element has no text.</summary>
+    [Theory]
+    [InlineData("greeting", "Hello", "Hello")]
+    [InlineData("greeting", null, "greeting")]
+    [InlineData("greeting", "", "")]
+    [InlineData("", null, "")]
+    [InlineData(null, null, "")]
+    [InlineData(null, "Hello", "Hello")]
+    public void DocumentTextIsAuthoredText(string? key, string? source, string expected) =>
+        Assert.Equal(expected, UiManager.ResolveText(key, source));
 
     /// <summary>Play copies keep component IDs but clicks must target the new session's hydrated assets.</summary>
     [Fact]

@@ -13,27 +13,6 @@ public sealed class UiManager : IUiPresenter
 {
     readonly Vulkan vulkan;
     readonly IInputSource? inputSource;
-    /// <summary>The locale used to draw UI documents for the current host/session.</summary>
-    public ILocaleContext? Locale
-    {
-        get => locale;
-        set
-        {
-            if (ReferenceEquals(locale, value)) { return; }
-            if (locale is not null) { locale.LocaleChanged -= OnLocaleChanged; }
-            locale = value;
-            if (locale is not null) { locale.LocaleChanged += OnLocaleChanged; }
-            InvalidateText();
-        }
-    }
-    ILocaleContext? locale;
-
-    void OnLocaleChanged(string _) => InvalidateText();
-
-    void InvalidateText()
-    {
-        foreach (var renderer in renderers.Values) { renderer.Renderer.InvalidateText(); }
-    }
 
     /// <inheritdoc />
     public bool IsPlaying { get; set; }
@@ -48,13 +27,11 @@ public sealed class UiManager : IUiPresenter
     /// <summary>Creates the manager on the shared Vulkan context.</summary>
     /// <param name="vulkan">The context UI textures are created on.</param>
     /// <param name="inputSource">Input source, or <c>null</c> for neutral input.</param>
-    /// <param name="locale">Locale context, or <c>null</c> to display authored text.</param>
-    public UiManager(Vulkan vulkan, IInputSource? inputSource = null, ILocaleContext? locale = null)
+    public UiManager(Vulkan vulkan, IInputSource? inputSource = null)
     {
         ArgumentNullException.ThrowIfNull(vulkan);
         this.vulkan = vulkan;
         this.inputSource = inputSource;
-        Locale = locale;
     }
 
     /// <summary>
@@ -365,20 +342,9 @@ public sealed class UiManager : IUiPresenter
         return new CachedRenderer(panel, panel.Document.AssetId, key, renderer, controller);
     }
 
-    string ResolveText(string? key, string? source)
-    {
-        if (key is { Length: > 0 })
-        {
-            return Locale?.Translate(key, source ?? key) ?? source ?? key;
-        }
-
-        if (string.IsNullOrEmpty(source))
-        {
-            return string.Empty;
-        }
-
-        return Locale?.TranslateSource(source) ?? source;
-    }
+    /// <summary>Authored text; a key stands in only when the element has no text of its own.</summary>
+    internal static string ResolveText(string? key, string? source) =>
+        source ?? (key is { Length: > 0 } ? key : string.Empty);
 
     // Changes whenever the panel's or the document's stylesheets, or its controller, change.
     static string SheetKeyFor(UiDocumentComponent panel, UiDocument document) =>
@@ -479,7 +445,6 @@ public sealed class UiManager : IUiPresenter
         }
 
         disposed = true;
-        Locale = null;
         overlayRuntime?.Dispose();
         foreach (var wp in worldPanels.Values)
         {

@@ -7,7 +7,7 @@ public sealed class UiManagerFactory : IUiPresenterFactory, IUiDocumentPreview
 {
     /// <inheritdoc/>
     public IUiPresenter Create(Vulkan vulkan, IInputSource? input, IServiceProvider? services) =>
-        new UiManager(vulkan, input, services?.GetService(typeof(ILocaleContext)) as ILocaleContext);
+        new UiManager(vulkan, input);
 
     /// <inheritdoc/>
     public byte[] RenderPng(string documentPath, int width, int height, string? dataJson)

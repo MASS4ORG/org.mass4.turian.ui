@@ -4,15 +4,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+- Removed: localization and `UiManager.Locale`.
+- Fixed: bricks on Windows.
+
 ## [1.3.1] - 2026-11-04
 
-- Fixed: the type manifest test holds for source checkouts of the DataAsset-Driven dependency, which CI uses; 1.3.0 was tagged but never published.
+- Fixed: type manifest test with a source checkout of the DataAsset-Driven dependency.
 
 ## [1.3.0] - 2026-11-04
 
-- Changed: localized document text comes from the shared MASS4.Localization services; requires Turian 3.8 #344.
-- Fixed: the prebuilt assemblies compile against the Guinevere version the manifest pins instead of the newest 6.x.
-- Fixed: Rebind document renderers when switching between editor and Play scene instances.
+- Changed: localized document text from MASS4.Localization #344.
+- Fixed: prebuilt assemblies compile against the pinned Guinevere version.
+- Fixed: document renderers rebind when switching between editor and Play scenes.
 
 ## [1.2.0] - 2026-10-28
 
@@ -26,8 +29,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [1.0.1] - 2026-10-22
 
-- Added: Bricks v2 roles and baked twin workflow.
+- Added: Bricks v2 roles and baked twin.
 
 ## [1.0.0]
 
-- First commit
+- Added: first release.
