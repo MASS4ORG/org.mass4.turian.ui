@@ -111,10 +111,10 @@ public sealed class UiTooltipTests
         var bounds = new Rect(0, 0, 200, 120);
         var size = new Vector2(60, 20);
 
-        Assert.Equal(new Vector2(10, 50), UiRenderer.TooltipPosition(new Rect(10, 20, 50, 30), size, bounds, 0, 0));
-        Assert.Equal(new Vector2(15, 54), UiRenderer.TooltipPosition(new Rect(10, 20, 50, 30), size, bounds, 5, 4));
-        Assert.Equal(new Vector2(10, 70), UiRenderer.TooltipPosition(new Rect(10, 90, 50, 30), size, bounds, 0, 0));
-        Assert.Equal(new Vector2(140, 50), UiRenderer.TooltipPosition(new Rect(180, 20, 20, 30), size, bounds, 0, 0));
-        Assert.Equal(new Vector2(0, 0), UiRenderer.TooltipPosition(new Rect(0, 0, 10, 110), size, bounds, 0, 0));
+        Assert.Equal(new Vector2(10, 50), TooltipBehavior.Position(new Rect(10, 20, 50, 30), size, bounds, 0, 0));
+        Assert.Equal(new Vector2(15, 54), TooltipBehavior.Position(new Rect(10, 20, 50, 30), size, bounds, 5, 4));
+        Assert.Equal(new Vector2(10, 70), TooltipBehavior.Position(new Rect(10, 90, 50, 30), size, bounds, 0, 0));
+        Assert.Equal(new Vector2(140, 50), TooltipBehavior.Position(new Rect(180, 20, 20, 30), size, bounds, 0, 0));
+        Assert.Equal(new Vector2(0, 0), TooltipBehavior.Position(new Rect(0, 0, 10, 110), size, bounds, 0, 0));
     }
 }

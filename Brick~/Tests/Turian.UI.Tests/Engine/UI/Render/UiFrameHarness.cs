@@ -102,16 +102,60 @@ sealed class UiFrameHarness
         return false;
     }
 
-    /// <summary>A still pointer at (<paramref name="x"/>, <paramref name="y"/>), optionally pressing.</summary>
-    public static IInputHandler Pointer(float x, float y, bool pressed = false)
+    /// <summary>A still pointer at (<paramref name="x"/>, <paramref name="y"/>), optionally pressing this frame.</summary>
+    public static IInputHandler Pointer(float x, float y, bool pressed = false) => Input(x, y, pressed, pressed);
+
+    /// <summary>A pointer at (<paramref name="x"/>, <paramref name="y"/>) whose button stays down from an earlier press.</summary>
+    public static IInputHandler Held(float x, float y) => Input(x, y, pressed: false, down: true);
+
+    /// <summary>A pointer at (<paramref name="x"/>, <paramref name="y"/>) with <paramref name="keys"/> pressed this frame.</summary>
+    public static IInputHandler Keys(float x, float y, params GKey[] keys)
+    {
+        var input = Input(x, y, pressed: false, down: false);
+        foreach (var key in keys)
+        {
+            input.IsKeyPressed(key).Returns(true);
+        }
+
+        return input;
+    }
+
+    static IInputHandler Input(float x, float y, bool pressed, bool down)
     {
         var input = Substitute.For<IInputHandler>();
         input.MousePosition.Returns(new Vector2(x, y));
         input.PrevMousePosition.Returns(new Vector2(x, y));
         input.IsMouseButtonPressed(Arg.Any<GMouseButton>()).Returns(pressed);
+        input.IsMouseButtonDown(Arg.Any<GMouseButton>()).Returns(down);
         input.GetTypedCharacters().Returns(string.Empty);
         return input;
     }
+
+    /// <summary>Registers a controller as the GUI's semantic input, as a host with a gamepad does.</summary>
+    public FakeGamepad UseGamepad()
+    {
+        var gamepad = new FakeGamepad();
+        gui.Platform.Register<ISemanticInputCapability>(gamepad);
+        return gamepad;
+    }
+}
+
+/// <summary>A controller whose actions the test presses for exactly one frame.</summary>
+sealed class FakeGamepad : ISemanticInputCapability
+{
+    readonly HashSet<SemanticAction> pressed = [];
+
+    /// <inheritdoc/>
+    public InputDevice ActiveDevice { get; } = new("test-pad", InputDeviceKind.Controller);
+
+    /// <summary>Presses <paramref name="actions"/> until <see cref="Release"/>.</summary>
+    public void Press(params SemanticAction[] actions) => pressed.UnionWith(actions);
+
+    /// <summary>Releases every action.</summary>
+    public void Release() => pressed.Clear();
+
+    /// <inheritdoc/>
+    public bool IsPressed(SemanticAction action) => pressed.Contains(action);
 }
 
 /// <summary>A clock the test moves by hand.</summary>

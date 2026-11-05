@@ -19,7 +19,7 @@ public sealed class UiProgressBarTests
     [InlineData(5f, 5f, 5f, 1f)]
     [InlineData(4f, 5f, 5f, 0f)]
     public void FractionMapsValueBetweenBounds(float? value, float min, float max, float? expected) =>
-        Assert.Equal(expected, UiRenderer.ProgressFraction(value, min, max));
+        Assert.Equal(expected, ProgressBehavior.Fraction(value, min, max));
 
     /// <summary>A known fraction fills from the left, or from the bottom when vertical.</summary>
     [Fact]
@@ -27,8 +27,8 @@ public sealed class UiProgressBarTests
     {
         var track = new Rect(10, 20, 200, 40);
 
-        Assert.Equal(new Rect(10, 20, 50, 40), UiRenderer.ProgressFill(track, 0.25f, false, 0f, 0.3f, 0.7f));
-        Assert.Equal(new Rect(10, 50, 200, 10), UiRenderer.ProgressFill(track, 0.25f, true, 0f, 0.3f, 0.7f));
+        Assert.Equal(new Rect(10, 20, 50, 40), ProgressBehavior.Fill(track, 0.25f, false, 0f, 0.3f, 0.7f));
+        Assert.Equal(new Rect(10, 50, 200, 10), ProgressBehavior.Fill(track, 0.25f, true, 0f, 0.3f, 0.7f));
     }
 
     /// <summary>An indeterminate chunk enters from the start, crosses the track and is clipped at both ends.</summary>
@@ -37,14 +37,14 @@ public sealed class UiProgressBarTests
     {
         var track = new Rect(0, 0, 100, 10);
 
-        Assert.Equal(0f, UiRenderer.ProgressFill(track, null, false, 0f, 0.3f, 1f).W);
-        var middle = UiRenderer.ProgressFill(track, null, false, 0.65f, 0.3f, 1f);
+        Assert.Equal(0f, ProgressBehavior.Fill(track, null, false, 0f, 0.3f, 1f).W);
+        var middle = ProgressBehavior.Fill(track, null, false, 0.65f, 0.3f, 1f);
         Assert.Equal(35f, middle.X, 3);
         Assert.Equal(30f, middle.W, 3);
-        var leaving = UiRenderer.ProgressFill(track, null, false, 1.2f, 0.3f, 1f);
+        var leaving = ProgressBehavior.Fill(track, null, false, 1.2f, 0.3f, 1f);
         Assert.Equal(90f, leaving.X, 3);
         Assert.Equal(10f, leaving.W, 3);
-        var vertical = UiRenderer.ProgressFill(track, null, true, 0.65f, 0.3f, 1f);
+        var vertical = ProgressBehavior.Fill(track, null, true, 0.65f, 0.3f, 1f);
         Assert.Equal(3.5f, vertical.Y, 3);
         Assert.Equal(3f, vertical.H, 3);
     }

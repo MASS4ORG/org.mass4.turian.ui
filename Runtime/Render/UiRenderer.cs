@@ -227,6 +227,9 @@ public sealed partial class UiRenderer
             case "ImageButton": RenderImageButton(gui, el); break;
             case "TextField": RenderTextField(gui, el); break;
             case "Toggle": RenderToggle(gui, el); break;
+            case "Slider": RenderSlider(gui, el); break;
+            case "Dropdown": RenderDropdown(gui, el); break;
+            case "EnumDropdown": RenderEnumDropdown(gui, el); break;
             default: RenderLayout(gui, el); break;
         }
     }
