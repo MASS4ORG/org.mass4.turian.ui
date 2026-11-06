@@ -269,7 +269,7 @@ public sealed partial class UiRenderer
     }
 
     string FieldId(UiElement el) =>
-        el.Name is { Length: > 0 } name ? $"UiTextField:{name}" : $"UiTextField:#{autoKey}";
+        el.Name is { Length: > 0 } name ? $"UiTextField:{keyScope}{name}" : $"UiTextField:{keyScope}#{autoKey}";
 
     float FontSize(Gui gui, UiElement el)
     {

@@ -11,7 +11,7 @@ public static class UiXmlParser
 
     static readonly HashSet<string> EventAttributes = new(StringComparer.OrdinalIgnoreCase)
     {
-        "click", "value-changed", "changed", "submit", "activated", "selection-changed",
+        "click", "value-changed", "changed", "submit", "activated", "selection-changed", "close",
     };
 
     /// <summary>Parses <paramref name="xml"/> into a document.</summary>

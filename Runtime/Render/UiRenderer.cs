@@ -22,6 +22,9 @@ public sealed partial class UiRenderer
 
     int autoKey;
 
+    /// <summary>Prefix of element state keys; a list item sets it so its template's state is kept per item.</summary>
+    string keyScope = string.Empty;
+
     /// <summary>Creates a renderer for a document.</summary>
     /// <param name="document">The parsed document to render.</param>
     public UiRenderer(UiDocument document) => this.document = document ?? throw new ArgumentNullException(nameof(document));
@@ -189,7 +192,18 @@ public sealed partial class UiRenderer
         }
 
         RenderElement(gui, document.Root);
+        if (gui.Pass == Pass.Pass2Render && focusExit is { } direction)
+        {
+            focusExit = null;
+            gui.Focus.Navigate(direction);
+        }
     }
+
+    /// <summary>
+    /// A direction focus leaves a list or grid in, applied once the whole document has registered its controls so the
+    /// neighbour can be any of them.
+    /// </summary>
+    FocusDirection? focusExit;
 
     void RenderElement(Gui gui, UiElement el)
     {
@@ -241,6 +255,9 @@ public sealed partial class UiRenderer
             case "ScrollView": RenderScrollView(gui, el); break;
             case "Tabs": RenderTabs(gui, el); break;
             case "ProgressBar": RenderProgressBar(gui, el); break;
+            case "List": RenderList(gui, el); break;
+            case "Grid": RenderGrid(gui, el); break;
+            case "Window": RenderWindow(gui, el); break;
             default: RenderContainer(gui, el); break;
         }
     }

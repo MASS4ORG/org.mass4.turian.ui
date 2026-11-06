@@ -120,6 +120,14 @@ sealed class UiFrameHarness
         return input;
     }
 
+    /// <summary>A pointer at (<paramref name="x"/>, <paramref name="y"/>) turning the wheel by <paramref name="delta"/> notches.</summary>
+    public static IInputHandler Wheel(float x, float y, float delta)
+    {
+        var input = Input(x, y, pressed: false, down: false);
+        input.MouseWheelDelta.Returns(delta);
+        return input;
+    }
+
     static IInputHandler Input(float x, float y, bool pressed, bool down)
     {
         var input = Substitute.For<IInputHandler>();

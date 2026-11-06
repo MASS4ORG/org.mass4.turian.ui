@@ -159,7 +159,7 @@ public sealed partial class UiRenderer
     }
 
     string StateKey(UiElement el, string kind) =>
-        el.Name is { Length: > 0 } name ? $"{name}:{kind}" : $"#{autoKey++}:{kind}";
+        el.Name is { Length: > 0 } name ? $"{keyScope}{name}:{kind}" : $"{keyScope}#{autoKey++}:{kind}";
 
     static Insets? ParseInsets(string? text)
     {
