@@ -1,7 +1,7 @@
 namespace Turian.Engine.UI;
 
 /// <summary>
-/// Builds a Guinevere <see cref="TextEffects"/> from <c>.uss</c> text-effect declarations:
+/// Builds a Guinevere <see cref="TextEffects"/> from inline or <c>.pss</c> text-effect declarations:
 /// <list type="bullet">
 ///   <item><c>text-outline: &lt;color&gt; &lt;width&gt;</c></item>
 ///   <item><c>text-shadow: &lt;color&gt; &lt;offsetX&gt; &lt;offsetY&gt; [blur]</c></item>

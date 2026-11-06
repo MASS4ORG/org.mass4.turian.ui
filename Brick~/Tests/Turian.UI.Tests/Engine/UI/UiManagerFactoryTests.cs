@@ -19,13 +19,13 @@ public sealed class UiManagerFactoryTests : IDisposable
         var path = Path.Combine(folder, "panel.ui");
         File.WriteAllText(path, """
             <UI>
-              <Style src="theme.uss" /><Style src="missing.uss" />
+              <Style src="theme.pss" /><Style src="missing.pss" />
               <VisualElement style="flex-grow: 1; background-color: {Panel.Color}">
                 <Repeat items="{Rows}" as="row"><Label text="{row}" /></Repeat>
               </VisualElement>
             </UI>
             """);
-        File.WriteAllText(Path.Combine(folder, "theme.uss"), "Label { font-size: 10; }");
+        File.WriteAllText(Path.Combine(folder, "theme.pss"), "Label { font-size = 10; }");
         var png = new UiManagerFactory().RenderPng(path, 100, 100, """
             { "Panel": { "Color": "#ff0000" }, "Rows": ["text", 1, 0.25, true, false, null] }
             """);

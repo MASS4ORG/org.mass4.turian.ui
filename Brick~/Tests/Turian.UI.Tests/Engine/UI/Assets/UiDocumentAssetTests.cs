@@ -38,14 +38,14 @@ public sealed class UiDocumentAssetTests
         File.WriteAllText(path,
             """
             <UI xmlns="https://turian.mass4.org/ui">
-              <Style src="theme.uss" />
+              <Style src="theme.pss" />
               <VisualElement name="root" />
             </UI>
             """);
         try
         {
             var doc = UiDocumentAsset.LoadContent(path);
-            Assert.Contains("theme.uss", doc.StyleSheets);
+            Assert.Contains("theme.pss", doc.StyleSheets);
         }
         finally
         {
@@ -53,12 +53,12 @@ public sealed class UiDocumentAssetTests
         }
     }
 
-    /// <summary>A <c>.uss</c> file on disk loads into parsed rules.</summary>
+    /// <summary>A <c>.pss</c> file on disk loads into parsed rules.</summary>
     [Fact]
     public void StyleSheet_LoadContent_ParsesFromDisk()
     {
-        var path = Path.Combine(Path.GetTempPath(), $"sheet-{Guid.NewGuid():N}.uss");
-        File.WriteAllText(path, "--accent: #4a90e2;\n.btn { background-color: var(--accent); }");
+        var path = Path.Combine(Path.GetTempPath(), $"sheet-{Guid.NewGuid():N}.pss");
+        File.WriteAllText(path, "$accent = #4a90e2;\n.btn { background-color = $accent; }");
         try
         {
             var sheet = UiStyleSheetAsset.LoadContent(path);

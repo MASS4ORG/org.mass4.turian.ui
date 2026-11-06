@@ -37,7 +37,7 @@ public sealed partial class UiRenderer
     /// <summary>
     /// A button is a styled node with a label: <c>gui.StyledNode</c> already paints the box and
     /// re-resolves it for <c>:hover</c> and <c>:active</c>, so the whole appearance comes from the
-    /// document's <c>.uss</c> rather than from a fixed control palette.
+    /// document's <c>.pss</c> rather than from a fixed control palette.
     /// </summary>
     void RenderButton(Gui gui, UiElement el)
     {

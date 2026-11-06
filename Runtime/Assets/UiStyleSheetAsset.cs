@@ -1,16 +1,13 @@
 namespace Turian.Engine.UI;
 
 /// <summary>
-/// Asset metadata for a <c>.uss</c> stylesheet. <see cref="GetContent"/> reads the artifact the
-/// importer validated and parses it into a Guinevere <see cref="StyleSheet"/>, cached per asset id.
+/// Asset metadata for a <c>.pss</c> stylesheet. <see cref="GetContent"/> reads the artifact the
+/// importer validated and parses it as strict PSS into a Guinevere <see cref="StyleSheet"/>, cached per asset id.
 /// </summary>
 [TypeId("e33bac6d-8920-535f-9507-bd4c31915c15")]
 public sealed class UiStyleSheetAsset : Asset
 {
     static readonly ConcurrentDictionary<Guid, StyleSheet> Cache = new();
-
-    /// <summary>How <c>.uss</c> sheets are parsed: their CSS-flavored <c>prop: value;</c> form is still accepted.</summary>
-    public static StyleSheetOptions ParseOptions { get; } = new() { AllowCssSyntax = true };
 
     /// <summary>
     /// Reads this stylesheet's artifact and returns the parsed <see cref="StyleSheet"/>, or
@@ -34,13 +31,13 @@ public sealed class UiStyleSheetAsset : Asset
         {
             using var stream = provider.GetAssetStream();
             using var reader = new StreamReader(stream);
-            var sheet = StyleSheet.Parse(reader.ReadToEnd(), ParseOptions);
+            var sheet = StyleSheet.Parse(reader.ReadToEnd());
             Cache[Id] = sheet;
             return sheet;
         }
         catch (Exception ex) when (ex is IOException or FormatException)
         {
-            Log.Logger.LogError(ex, "Failed to load USS asset {AssetId} ({RelativePath})", Id, RelativePath);
+            Log.Logger.LogError(ex, "Failed to load stylesheet {AssetId} ({RelativePath})", Id, RelativePath);
             return null;
         }
     }
@@ -52,11 +49,11 @@ public sealed class UiStyleSheetAsset : Asset
     /// <summary>Clears every cached stylesheet. Call on project unload.</summary>
     public static void ClearCache() => Cache.Clear();
 
-    /// <summary>Loads and parses a <c>.uss</c> file directly from disk. Used by tooling and tests.</summary>
-    /// <param name="absolutePath">Absolute path of the <c>.uss</c> file.</param>
+    /// <summary>Loads and parses a <c>.pss</c> file directly from disk. Used by tooling and tests.</summary>
+    /// <param name="absolutePath">Absolute path of the <c>.pss</c> file.</param>
     public static StyleSheet LoadContent(string absolutePath)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(absolutePath);
-        return StyleSheet.Parse(File.ReadAllText(absolutePath), ParseOptions);
+        return StyleSheet.Parse(File.ReadAllText(absolutePath));
     }
 }

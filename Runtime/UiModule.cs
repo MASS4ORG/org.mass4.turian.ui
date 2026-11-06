@@ -4,7 +4,7 @@ namespace Turian.Engine.UI;
 /// The Guinevere-based in-game GUI layer for Turian.
 ///
 /// This assembly hosts the runtime that drives a <see cref="Gui"/> frame from the
-/// engine loop, the <c>.ui</c> document model and parser, the <c>.uss</c> style
+/// engine loop, the <c>.ui</c> document model and parser, the <c>.pss</c> style
 /// resolver, the data-binding engine, the screen-space and world-space render
 /// backends, and the <c>UiDocumentComponent</c> / <c>UiRaycasterComponent</c>
 /// scene components.

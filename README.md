@@ -14,4 +14,4 @@ Or enable `org.mass4.turian.ui` from the Bricks panel.
 
 ## Use
 
-Add a `UiDocumentComponent` to a node and point it at a `.ui` document. A document lists its elements, an optional controller type and its stylesheets (`<Style src="menu.uss" />`). Stylesheets use PSS syntax in `.uss` files.
+Add a `UiDocumentComponent` to a node and point it at a `.ui` document. A document lists its elements, an optional controller type and its stylesheets (`<Style src="menu.pss" />`). Stylesheets are `.pss` files in PSS syntax (`property = value;`).

@@ -1,7 +1,7 @@
 namespace Turian.Engine.UI;
 
 /// <summary>
-/// Resolves a <c>.ui</c> / <c>.uss</c> font reference — a project-relative <c>.ttf</c>/<c>.otf</c>
+/// Resolves a <c>.ui</c> / <c>.pss</c> font reference — a project-relative <c>.ttf</c>/<c>.otf</c>
 /// path, an <c>asset://&lt;guid&gt;</c>, or a bare family name — to a Guinevere <see cref="Font"/>.
 /// Loaded typefaces are cached; callers set the point size with <see cref="Font.WithSize"/>.
 /// </summary>

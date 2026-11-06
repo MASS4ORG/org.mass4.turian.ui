@@ -33,15 +33,17 @@ public sealed class UiBrickTests : IDisposable
     }
 
     /// <summary>
-    /// The manifest pins the NuGet versions the prebuilt assemblies were compiled against, so a game restoring them
-    /// can load what the brick references.
+    /// The manifest pins the NuGet versions the brick's own prebuilt assemblies were compiled against, so a game
+    /// restoring them can load what the brick references. Third-party assemblies copied beside them reference what
+    /// their packages ship with.
     /// </summary>
     [Fact]
     public void ManifestPackagesMatchPrecastReferences()
     {
         var brick = Install(brickId);
 
-        foreach (var path in BrickAssemblies.RuntimeAssemblies(brick))
+        foreach (var path in BrickAssemblies.RuntimeAssemblies(brick)
+                     .Where(static p => Path.GetFileName(p).StartsWith("Turian.", StringComparison.Ordinal)))
         {
             using var pe = new System.Reflection.PortableExecutable.PEReader(File.OpenRead(path));
             var metadata = System.Reflection.Metadata.PEReaderExtensions.GetMetadataReader(pe);
@@ -60,6 +62,38 @@ public sealed class UiBrickTests : IDisposable
             }
         }
     }
+
+    /// <summary>
+    /// The prebuilt assemblies and the suite itself run on exactly the Guinevere the manifest pins, so a game never
+    /// loads a different version than the one the brick was compiled and tested against.
+    /// </summary>
+    [Theory]
+    [InlineData(typeof(Gui), "MASS4.Guinevere")]
+    [InlineData(typeof(StylingExtensions), "MASS4.Guinevere.Styling")]
+    public void GuinevereMatchesThePin(Type anchor, string package)
+    {
+        var brick = Install(brickId);
+        var pinned = Version.Parse(brick.Manifest.Nuget[package]);
+        var assembly = anchor.Assembly.GetName().Name;
+
+        foreach (var path in BrickAssemblies.RuntimeAssemblies(brick).Concat(BrickAssemblies.EditorAssemblies(brick)))
+        {
+            using var pe = new System.Reflection.PortableExecutable.PEReader(File.OpenRead(path));
+            var metadata = System.Reflection.Metadata.PEReaderExtensions.GetMetadataReader(pe);
+            foreach (var handle in metadata.AssemblyReferences)
+            {
+                var reference = metadata.GetAssemblyReference(handle);
+                if (metadata.GetString(reference.Name) == assembly)
+                {
+                    Assert.Equal(pinned, Truncate(reference.Version));
+                }
+            }
+        }
+
+        Assert.Equal(pinned, Truncate(anchor.Assembly.GetName().Version!));
+    }
+
+    static Version Truncate(Version version) => new(version.Major, version.Minor, version.Build);
 
     /// <summary>The generated project of a game references the brick's assemblies and NuGet packages, and only when installed.</summary>
     [Fact]

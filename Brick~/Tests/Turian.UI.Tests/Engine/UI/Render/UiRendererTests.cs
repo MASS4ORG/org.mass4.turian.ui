@@ -289,7 +289,7 @@ public sealed class UiRendererTests
         Assert.True(At(px, w / 2, 75).B > 200, "row 2 blue");
     }
 
-    /// <summary>A leaf <c>&lt;Label&gt;</c> takes its color from a matching <c>.uss</c> class rule.</summary>
+    /// <summary>A leaf <c>&lt;Label&gt;</c> takes its color from a matching <c>.pss</c> class rule.</summary>
     [Fact]
     public void Label_TakesColorFromStylesheetClass()
     {
@@ -301,7 +301,7 @@ public sealed class UiRendererTests
               </VisualElement>
             </UI>
             """,
-            static r => r.StyleSheets.Add(StyleSheet.Parse(".big { color: #ff0000; font-size: 40; }", UiStyleSheetAsset.ParseOptions)));
+            static r => r.StyleSheets.Add(StyleSheet.Parse(".big { color = #ff0000; font-size = 40; }")));
 
         var reddish = 0;
         for (var y = 0; y < h; y++)
@@ -316,7 +316,7 @@ public sealed class UiRendererTests
             }
         }
 
-        Assert.True(reddish > 40, $"expected red glyph pixels from the .uss rule, found {reddish}");
+        Assert.True(reddish > 40, $"expected red glyph pixels from the .pss rule, found {reddish}");
     }
 
     static SKImage Solid(SKColor color)

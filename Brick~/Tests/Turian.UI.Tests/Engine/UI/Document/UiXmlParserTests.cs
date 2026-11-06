@@ -9,8 +9,8 @@ public sealed class UiXmlParserTests
             xmlns:x="https://example.com/x"
             controller="Usercode.MainMenu">
 
-          <Style src="Assets/UI/theme.uss" />
-          <Style src="menu.uss" />
+          <Style src="Assets/UI/theme.pss" />
+          <Style src="menu.pss" />
 
           <Template name="MenuButton">
             <Button name="btn" class="menu-item" text="{label}" click="OnPick" />
@@ -44,7 +44,7 @@ public sealed class UiXmlParserTests
         var parsed = UiXmlParser.Parse(doc, "menu.ui");
 
         Assert.Equal("Usercode.MainMenu", parsed.ControllerType);
-        Assert.Equal(new[] { "Assets/UI/theme.uss", "menu.uss" }, parsed.StyleSheets);
+        Assert.Equal(new[] { "Assets/UI/theme.pss", "menu.pss" }, parsed.StyleSheets);
         Assert.Equal("menu.ui", parsed.SourcePath);
 
         Assert.True(parsed.Templates.ContainsKey("MenuButton"));

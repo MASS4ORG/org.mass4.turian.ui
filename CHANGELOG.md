@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Added: Slider, Dropdown and EnumDropdown #342.
 - Added: List and Grid elements #355.
 - Added: Window element #356.
+- Changed: stylesheets are `.pss` files in strict PSS; `.uss` files and the CSS syntax are no longer read #357.
 - Removed: localization and `UiManager.Locale`.
 - Fixed: bricks on Windows.
 

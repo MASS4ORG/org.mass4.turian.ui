@@ -15,7 +15,7 @@ sealed class UiFrameHarness
         Renderer = new UiRenderer(UiXmlParser.Parse(ui));
         if (sheet is not null)
         {
-            Renderer.StyleSheets.Add(StyleSheet.Parse(sheet, UiStyleSheetAsset.ParseOptions));
+            Renderer.StyleSheets.Add(StyleSheet.Parse(sheet));
         }
 
         Width = width;

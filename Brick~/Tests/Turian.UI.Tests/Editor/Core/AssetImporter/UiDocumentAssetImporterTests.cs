@@ -9,7 +9,7 @@ public sealed class UiDocumentAssetImporterTests
     [Theory]
     [InlineData("menu.ui", true)]
     [InlineData("menu.UI", true)]
-    [InlineData("theme.uss", false)]
+    [InlineData("theme.pss", false)]
     [InlineData("button.png", false)]
     [InlineData("", false)]
     public void IsValid_MatchesUiExtension(string path, bool expected) =>
@@ -65,12 +65,12 @@ public sealed class UiDocumentAssetImporterTests
     public void CreateChildAssets_RecordsReferencedFilesThatExist()
     {
         using var dir = new TempDir();
-        dir.Write("theme.uss", ".x { color: #fff; }");
+        dir.Write("theme.pss", ".x { color = #fff; }");
         dir.Write("button.png", "not really a png");
         var source = dir.Write("menu.ui",
             """
             <UI xmlns="https://turian.mass4.org/ui">
-              <Style src="theme.uss" />
+              <Style src="theme.pss" />
               <ImageButton image-normal="button.png" image-hover="missing.png" />
             </UI>
             """);
@@ -78,7 +78,7 @@ public sealed class UiDocumentAssetImporterTests
         var context = new RecordingContext();
         _ = importer.CreateChildAssets(Guid.NewGuid(), source, context).ToList();
 
-        Assert.Contains(Path.Combine(dir.Path, "theme.uss"), context.Ensured);
+        Assert.Contains(Path.Combine(dir.Path, "theme.pss"), context.Ensured);
         Assert.Contains(Path.Combine(dir.Path, "button.png"), context.Ensured);
         Assert.DoesNotContain(Path.Combine(dir.Path, "missing.png"), context.Ensured);
     }

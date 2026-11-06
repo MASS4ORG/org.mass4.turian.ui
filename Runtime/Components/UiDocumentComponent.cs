@@ -82,7 +82,7 @@ public class UiDocumentComponent : Component
     public List<DataAsset> DataAssets { get; set; } = [];
 
     /// <summary>
-    /// Extra <c>.uss</c> stylesheets applied on top of the ones the document declares with
+    /// Extra <c>.pss</c> stylesheets applied on top of the ones the document declares with
     /// <c>&lt;Style src&gt;</c>, lowest priority first.
     /// </summary>
     public List<AssetReference<UiStyleSheetAsset>> StyleSheets { get; set; } = [];

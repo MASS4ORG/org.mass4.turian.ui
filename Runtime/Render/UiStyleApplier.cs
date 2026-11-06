@@ -1,8 +1,8 @@
 namespace Turian.Engine.UI;
 
 /// <summary>
-/// Applies a subset of CSS/USS layout declarations from a <c>.ui</c> inline <c>style</c> onto a
-/// Guinevere <see cref="LayoutNode"/>. Class-based <c>.uss</c> resolution is a separate step; this
+/// Applies a subset of layout declarations from a <c>.ui</c> inline <c>style</c> onto a
+/// Guinevere <see cref="LayoutNode"/>. Class-based <c>.pss</c> resolution is a separate step; this
 /// only handles literal inline declarations.
 /// </summary>
 public static class UiStyleApplier

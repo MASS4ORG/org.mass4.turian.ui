@@ -1,6 +1,6 @@
 namespace Turian.Tests;
 
-/// <summary>Tests for <see cref="UiTextEffects"/> — parsing <c>.uss</c> text-effect declarations.</summary>
+/// <summary>Tests for <see cref="UiTextEffects"/> — parsing <c>.pss</c> text-effect declarations.</summary>
 public sealed class UiTextEffectsTests
 {
     static Func<string, string> Style(params (string Key, string Value)[] pairs)

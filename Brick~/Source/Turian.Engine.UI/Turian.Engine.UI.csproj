@@ -16,8 +16,8 @@
 
     <ItemGroup>
         <!-- Exactly the versions package.json pins: the prebuilt assemblies must reference what games restore. -->
-        <PackageReference Include="MASS4.Guinevere" Version="[6.2.0]" Condition="'$(GuinevereLocalPath)' == ''" />
-        <PackageReference Include="MASS4.Guinevere.Styling" Version="[6.2.0]" Condition="'$(GuinevereLocalPath)' == ''"/>
+        <PackageReference Include="MASS4.Guinevere" Version="[6.6.0]" Condition="'$(GuinevereLocalPath)' == ''" />
+        <PackageReference Include="MASS4.Guinevere.Styling" Version="[6.6.0]" Condition="'$(GuinevereLocalPath)' == ''"/>
     </ItemGroup>
 
     <ItemGroup>

@@ -7,7 +7,7 @@ namespace Turian.Engine.UI;
 /// </summary>
 /// <remarks>
 /// Inline <c>style</c> declarations are applied via <see cref="UiStyleApplier"/>. Class-based
-/// <c>.uss</c> resolution and the full data-binding engine are separate steps; this renderer uses
+/// <c>.pss</c> resolution and the full data-binding engine are separate steps; this renderer uses
 /// literal attribute values plus <see cref="DataResolver"/> for any bindings and
 /// <see cref="ImageResolver"/> for image sources.
 /// </remarks>
@@ -118,7 +118,7 @@ public sealed partial class UiRenderer
         preparedText.GetValueOrDefault((string.IsNullOrEmpty(key) ? null : key, source)) ?? source;
 
     /// <summary>
-    /// <c>.uss</c> stylesheets to apply, lowest priority first. Populated from the document's
+    /// <c>.pss</c> stylesheets to apply, lowest priority first. Populated from the document's
     /// <c>&lt;Style&gt;</c> references by whoever loads it.
     /// </summary>
     public IList<StyleSheet> StyleSheets { get; } = new List<StyleSheet>();

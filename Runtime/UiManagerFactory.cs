@@ -28,7 +28,7 @@ public sealed class UiManagerFactory : IUiPresenterFactory, IUiDocumentPreview
             var stylesheet = Path.GetFullPath(Path.Combine(baseDir, source));
             if (File.Exists(stylesheet))
             {
-                renderer.StyleSheets.Add(StyleSheet.Parse(File.ReadAllText(stylesheet), UiStyleSheetAsset.ParseOptions));
+                renderer.StyleSheets.Add(UiStyleSheetAsset.LoadContent(stylesheet));
             }
             else
             {

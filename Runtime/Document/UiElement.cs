@@ -13,7 +13,7 @@ public sealed class UiElement
     /// <summary>The <c>name</c> attribute — the element's id within the document, or <c>null</c>.</summary>
     public string? Name { get; init; }
 
-    /// <summary>USS classes from the <c>class</c> attribute.</summary>
+    /// <summary>Style classes from the <c>class</c> attribute.</summary>
     public List<string> Classes { get; init; } = [];
 
     /// <summary>

@@ -108,7 +108,7 @@ public sealed class UiManagerTests : IClassFixture<VulkanFixture>, IDisposable
 
         var documentId = RegisterDocument($"""
             <UI xmlns="https://turian.mass4.org/ui" controller="{typeof(CountingController).FullName}">
-              <Style src="missing.uss" />
+              <Style src="missing.pss" />
               <Label text="Hello" />
             </UI>
             """);
