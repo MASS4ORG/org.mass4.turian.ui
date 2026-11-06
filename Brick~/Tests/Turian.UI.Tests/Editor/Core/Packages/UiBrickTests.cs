@@ -25,8 +25,11 @@ public sealed class UiBrickTests : IDisposable
         var runtime = BrickAssemblies.RuntimeAssemblies(brick).Select(Path.GetFileNameWithoutExtension).ToList();
         Assert.Contains("Turian.Engine.UI", runtime);
         Assert.DoesNotContain("Turian.Editor.UI", runtime);
-        Assert.Equal(["Turian.Editor.UI"],
-            BrickAssemblies.EditorAssemblies(brick).Select(Path.GetFileNameWithoutExtension));
+        Assert.DoesNotContain("Turian.Cli.UI", runtime);
+        Assert.DoesNotContain("System.CommandLine", runtime);
+        Assert.Equal(["Turian.Cli.UI", "Turian.Editor.UI"],
+            BrickAssemblies.EditorAssemblies(brick).Select(Path.GetFileNameWithoutExtension).Order(StringComparer.Ordinal));
+        Assert.DoesNotContain("System.CommandLine", brick.Manifest.Nuget.Keys);
         Assert.Contains(typeof(UiDocumentComponent).Assembly.GetReferencedAssemblies(), static r => r.Name == "Guinevere");
         Assert.Contains("SkiaSharp", brick.Manifest.Nuget.Keys);
         Assert.Contains("MASS4.Guinevere", brick.Manifest.Nuget.Keys);

@@ -7,7 +7,19 @@ namespace Turian.Engine.UI;
 /// </summary>
 public static class UiImageRenderer
 {
-    /// <summary>Runs one two-pass UI frame and returns it as a PNG.</summary>
+    /// <summary>
+    /// Frames rendered at least: layout that measures the previous frame, such as a grid's columns or a scroll
+    /// container's scrollbar space, settles on the second.
+    /// </summary>
+    const int minimumFrames = 2;
+
+    /// <summary>Frames rendered at most, so an animation that always asks for another frame still ends.</summary>
+    const int maximumFrames = 4;
+
+    /// <summary>
+    /// Runs two-pass UI frames until the layout settles (at least two, more while a frame is requested, at most four)
+    /// and returns the last as a PNG. The clock advances once, so every frame shows the same moment.
+    /// </summary>
     /// <param name="build">
     /// Builds the UI; invoked once per pass, so it must be idempotent.
     /// </param>
@@ -31,21 +43,29 @@ public static class UiImageRenderer
 
         using var surface = SKSurface.Create(new SKImageInfo(width, height, SKColorType.Rgba8888, SKAlphaType.Unpremul));
         var canvas = surface.Canvas;
-        canvas.Clear(background ?? SKColors.Transparent);
 
         var gui = new Gui { Input = new EngineInputHandler(inputSource) };
         var font = Font.FromFamilyName("sans-serif", 16);
         gui.Time.Update(deltaTime);
 
-        gui.SetStage(Pass.Pass1Build);
-        gui.BeginFrame(canvas, font, font);
-        build(gui);
-        gui.CalculateLayout();
+        for (var frame = 1; frame <= maximumFrames; frame++)
+        {
+            canvas.Clear(background ?? SKColors.Transparent);
+            gui.SetStage(Pass.Pass1Build);
+            gui.BeginFrame(canvas, font, font);
+            build(gui);
+            gui.CalculateLayout();
 
-        gui.SetStage(Pass.Pass2Render);
-        build(gui);
-        gui.Render();
-        gui.EndFrame();
+            gui.SetStage(Pass.Pass2Render);
+            build(gui);
+            gui.Render();
+            gui.EndFrame();
+
+            if (frame >= minimumFrames && gui.FrameWaitSeconds > 0)
+            {
+                break;
+            }
+        }
 
         canvas.Flush();
         using var image = surface.Snapshot();

@@ -20,6 +20,6 @@
     </Target>
 
     <ItemGroup>
-        <Compile Include="../../../Editor/**/*.cs" />
+        <Compile Include="../../../Editor/**/*.cs" Exclude="../../../Editor/Cli/**/*.cs" />
     </ItemGroup>
 </Project>

@@ -81,8 +81,9 @@ public sealed class UiImageRendererTests
             keys.Add(gui.Input.IsKeyDown(GKey.Space));
         }, 32, 32, inputSource: source);
 
-        Assert.Equal([new Vector2(20, 30), new Vector2(20, 30)], positions);
-        Assert.Equal([true, true], keys);
+        Assert.NotEmpty(positions);
+        Assert.All(positions, static p => Assert.Equal(new Vector2(20, 30), p));
+        Assert.All(keys, Assert.True);
 
         positions.Clear();
         keys.Clear();
@@ -92,8 +93,31 @@ public sealed class UiImageRendererTests
             keys.Add(gui.Input.IsKeyDown(GKey.Space));
         }, 32, 32);
 
-        Assert.Equal([Vector2.Zero, Vector2.Zero], positions);
-        Assert.Equal([false, false], keys);
+        Assert.NotEmpty(positions);
+        Assert.All(positions, static p => Assert.Equal(Vector2.Zero, p));
+        Assert.All(keys, Assert.False);
+    }
+
+    /// <summary>
+    /// A preview renders until layout that measures the previous frame settles, so a grid, which waits for its width,
+    /// shows its cells in a one-shot render.
+    /// </summary>
+    [Fact]
+    public void RenderPng_SettlesLayoutThatMeasuresThePreviousFrame()
+    {
+        var renderer = new UiRenderer(UiXmlParser.Parse("""
+            <UI><Grid items="{Cells}"><Label text="{item}" /></Grid></UI>
+            """));
+        renderer.StyleSheets.Add(StyleSheet.Parse("""
+            Grid { width = 100; height = 100; cell-width = 25; cell-height = 25; }
+            Item { background-color = #00ff00; }
+            """));
+        renderer.Bind(new Dictionary<string, object?> { ["Cells"] = new List<object?> { "a", "b", "c" } });
+
+        using var bitmap = SKBitmap.Decode(UiImageRenderer.RenderPng(renderer.Render, 120, 120));
+
+        Assert.True(bitmap.GetPixel(10, 10) is { Red: < 60, Green: > 200, Blue: < 60 },
+            "the first cell should be drawn");
     }
 
     /// <summary>Zero or negative dimensions are rejected before any drawing happens.</summary>

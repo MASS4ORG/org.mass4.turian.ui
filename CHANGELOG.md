@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Added: List and Grid elements #355.
 - Added: Window element #356.
 - Changed: stylesheets are `.pss` files in strict PSS; `.uss` files and the CSS syntax are no longer read #357.
+- Added: `turian-cli ui` renders a `.ui` document to a PNG.
 - Removed: localization and `UiManager.Locale`.
 - Fixed: bricks on Windows.
 

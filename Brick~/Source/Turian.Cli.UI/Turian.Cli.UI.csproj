@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Version>1.0.0</Version>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="$(TurianDir)Turian/Editor/Core/Turian.Editor.Core.csproj" />
+    <ProjectReference Include="$(TurianDir)Turian/Editor/Cli.Sdk/Turian.Cli.Sdk.csproj" />
+    <Compile Include="../../../Editor/Cli/**/*.cs" />
+  </ItemGroup>
+  <Target Name="PrecastEditorAssembly" AfterTargets="Build" Condition="'$(TargetFramework)' != ''">
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(BrickDir)Brick~/Precast/editor" />
+  </Target>
+</Project>
