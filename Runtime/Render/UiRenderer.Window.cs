@@ -15,16 +15,19 @@ public sealed partial class UiRenderer
     /// <summary>Windows from bottom to top; a raised window moves to the end.</summary>
     readonly List<WindowBehavior> windowOrder = [];
 
-    /// <summary>How many dropdown lists are open this pass, so a window leaves Cancel to a popup inside it.</summary>
-    int openPopups;
+    /// <summary>
+    /// How many controls own Cancel this pass (an open dropdown list, a focused text field), so a window closes on
+    /// Cancel only when no control inside it consumed it.
+    /// </summary>
+    int cancelClaims;
 
     /// <summary>
     /// A movable <c>&lt;Window&gt;</c> at screen position <c>x</c>, <c>y</c> (two-way bindable) with a <c>TitleBar</c>
     /// holding its <c>Title</c> (the literal or bound <c>title</c>) and, when <c>closable</c>, a <c>CloseButton</c>
     /// (its <c>close-text</c>, × by default), above its children. Dragging the title bar moves it within the screen; a
-    /// press or focus inside raises it above other windows. Closing (the button, or Cancel while focus is inside) sets
-    /// a two-way bindable <c>open</c> to false and fires <c>close</c>. The element's rule styles the window
-    /// (<c>:dragging</c>, <c>:focus-within</c>) and <c>z-index</c> sets the lowest window's layer.
+    /// press or focus inside raises it above other windows. Closing (the button, or Cancel while focus is inside and no
+    /// control there consumed it) sets a two-way bindable <c>open</c> to false and fires <c>close</c>. The element's
+    /// rule styles the window (<c>:dragging</c>, <c>:focus-within</c>) and <c>z-index</c> sets the lowest window's layer.
     /// </summary>
     void RenderWindow(Gui gui, UiElement el)
     {
@@ -66,7 +69,7 @@ public sealed partial class UiRenderer
             DrawBackground(gui, el);
             RenderTitleBar(gui, el, window);
 
-            var popups = openPopups;
+            var claims = cancelClaims;
             foreach (var child in el.Children)
             {
                 RenderElement(gui, child);
@@ -74,7 +77,7 @@ public sealed partial class UiRenderer
 
             if (gui.Pass == Pass.Pass2Render)
             {
-                window.Update(gui, IsClosable(el), openPopups > popups);
+                window.Update(gui, IsClosable(el), cancelClaims > claims);
             }
         }
 

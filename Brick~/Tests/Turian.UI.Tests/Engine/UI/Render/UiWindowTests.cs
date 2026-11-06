@@ -12,6 +12,7 @@ public sealed class UiWindowTests
         CloseButton { width = 16; height = 16; background-color = #ff0000; }
         Slider { width = 60; height = 20; }
         Dropdown { width = 60; height = 20; }
+        TextField { width = 60; height = 20; }
         """;
 
     static IInputHandler Idle => UiFrameHarness.Pointer(-1, -1);
@@ -210,6 +211,23 @@ public sealed class UiWindowTests
 
         ui.Frames(Key(GKey.Escape), Idle);
         Assert.False(model.BOpen);
+    }
+
+    /// <summary>Cancel in a focused text field belongs to the field, so the window stays open.</summary>
+    [Fact]
+    public void CancelInATextFieldKeepsTheWindow()
+    {
+        var (ui, model) = TwoWindows("""<TextField value="crew" />""");
+        var pad = ui.UseGamepad();
+
+        ui.Frames(Idle, Press(80, 56), Idle, Idle, Key(GKey.Escape), Idle);
+        Assert.True(model.BOpen);
+
+        pad.Press(SemanticAction.Cancel);
+        ui.Frame(Idle);
+        pad.Release();
+        ui.Frame(Idle);
+        Assert.True(model.BOpen);
     }
 
     /// <summary>Unbound windows take their literal position once and keep what dragging gives them.</summary>

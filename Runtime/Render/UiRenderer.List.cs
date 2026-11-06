@@ -121,7 +121,8 @@ public sealed partial class UiRenderer
 
     /// <summary>
     /// Cell size, columns and visible rows from the style and last frame's scroll state, keeping the offset within the
-    /// content so a shrunk collection does not scroll past its end. The first frame assumes the layout bounds.
+    /// content so a shrunk collection does not scroll past its end. Before its first layout a list assumes the layout
+    /// bounds, while a grid, whose columns depend on its width, lays out nothing and asks for another frame.
     /// </summary>
     ListGeometry CollectionGeometry(Gui gui, UiElement el, LayoutNode node, ScrollState? scroll, int count, bool grid)
     {
@@ -136,6 +137,12 @@ public sealed partial class UiRenderer
             ? GridCells(gui, el, gap, width)
             : (1, width, StyleFloat(gui, el, "item-height", defaultItemHeight));
         var geometry = new ListGeometry(count, columns, cellWidth, Math.Max(rowHeight, 1f), gap, 0, -1, viewport);
+        if (grid && scroll is not { ViewportSize.X: > 0f })
+        {
+            gui.RequestFrame();
+            return geometry;
+        }
+
         var offset = ClampOffset(scroll, Math.Max(0f, (geometry.Rows * geometry.Stride) - gap - viewport));
         var (first, last) = ListBehavior.VisibleRows(offset, viewport, geometry.Stride, geometry.Rows);
         return geometry with { FirstRow = first, LastRow = last };

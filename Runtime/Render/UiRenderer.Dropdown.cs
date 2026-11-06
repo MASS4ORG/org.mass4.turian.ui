@@ -44,7 +44,7 @@ public sealed partial class UiRenderer
         DrawDropdownButton(gui, el, options, selected, dropdown, enabled);
         if (dropdown.IsOpen)
         {
-            openPopups++;
+            cancelClaims++;
             DrawDropdownList(gui, el, options, selected, dropdown);
         }
 

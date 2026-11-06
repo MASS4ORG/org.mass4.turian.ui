@@ -91,8 +91,8 @@ sealed class WindowBehavior
     /// <summary>Handles the window in the render pass after its content; its current node is the window.</summary>
     /// <param name="gui">The GUI rendering the window.</param>
     /// <param name="closable">Whether Cancel may close it.</param>
-    /// <param name="popupOpen">Whether a popup inside it is open and owns Cancel.</param>
-    public void Update(Gui gui, bool closable, bool popupOpen)
+    /// <param name="cancelClaimed">Whether a control inside it owns Cancel this frame.</param>
+    public void Update(Gui gui, bool closable, bool cancelClaimed)
     {
         var node = gui.CurrentNode;
         Size = new Vector2(node.Rect.W, node.Rect.H);
@@ -103,7 +103,7 @@ sealed class WindowBehavior
         }
 
         wasOpen = true;
-        if (closable && within && !popupOpen && gui.IsCancelPressed)
+        if (closable && within && !cancelClaimed && gui.IsCancelPressed)
         {
             closeRequested = true;
         }

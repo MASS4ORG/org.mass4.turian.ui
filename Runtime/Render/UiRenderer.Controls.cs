@@ -177,6 +177,11 @@ public sealed partial class UiRenderer
 
             if (enabled)
             {
+                if (gui.Pass == Pass.Pass2Render && gui.HasFocus())
+                {
+                    cancelClaims++;
+                }
+
                 TextEditor.Process(gui, edit, gui.GetInteractable(), FontSize(gui, el));
             }
             else

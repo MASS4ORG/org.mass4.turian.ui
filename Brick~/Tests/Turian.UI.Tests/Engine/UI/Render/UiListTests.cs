@@ -274,6 +274,16 @@ public sealed class UiListTests
         Assert.Equal(10, model.Index);
     }
 
+    /// <summary>A grid waits for its width before laying out cells, so no frame wraps them wrongly.</summary>
+    [Fact]
+    public void GridWaitsForItsWidth()
+    {
+        var (ui, _) = Bound("Grid", model: sheet + "Grid { cell-width = 25; }");
+
+        Assert.False(UiFrameHarness.Contains(ui.Frame(), 0, 255, 255), "the first frame should lay out no cells");
+        Assert.True(ui.IsColor(ui.Frame(), 10, 10, 0, 255, 255), "the next frame should lay them out");
+    }
+
     /// <summary>Without fixed columns a grid fits as many cells of its cell width as the width allows.</summary>
     [Fact]
     public void GridFitsCellsByWidth()
