@@ -3,7 +3,9 @@ namespace Turian.Tests;
 /// <summary>The <c>&lt;Window&gt;</c> element: dragging, raising, closing, focus and binding.</summary>
 public sealed class UiWindowTests
 {
+    /// <summary>Title and close glyphs are transparent so platform-dependent glyphs never cover a probed pixel.</summary>
     const string sheet = """
+        Title, CloseButton { color = transparent; }
         Window { width = 80; height = 60; background-color = #0000ff; }
         Window.b { background-color = #00ff00; }
         Window:focus-within { background-color = #ff00ff; }

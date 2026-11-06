@@ -3,7 +3,9 @@ namespace Turian.Tests;
 /// <summary>The <c>&lt;List&gt;</c> and <c>&lt;Grid&gt;</c> elements: virtualization, selection and input.</summary>
 public sealed class UiListTests
 {
+    /// <summary>Labels are transparent so platform-dependent glyphs never cover a probed pixel.</summary>
     const string sheet = """
+        Label { color = transparent; }
         List, Grid { width = 100; height = 100; background-color = #222222; }
         List { item-height = 20; }
         Grid { cell-height = 25; }

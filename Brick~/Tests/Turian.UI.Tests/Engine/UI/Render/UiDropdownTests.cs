@@ -3,7 +3,9 @@ namespace Turian.Tests;
 /// <summary>The <c>&lt;Dropdown&gt;</c> and <c>&lt;EnumDropdown&gt;</c> elements: options, input, binding and styling.</summary>
 public sealed class UiDropdownTests
 {
+    /// <summary>Text is transparent so platform-dependent glyphs never cover a probed pixel.</summary>
     const string sheet = """
+        Dropdown, EnumDropdown, Option { color = transparent; }
         Dropdown, EnumDropdown { width = 120; height = 24; background-color = #333333; }
         Dropdown:open { background-color = #0000ff; }
         Dropdown:empty { background-color = #ff00ff; }

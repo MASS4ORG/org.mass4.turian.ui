@@ -3,7 +3,9 @@ namespace Turian.Tests;
 /// <summary>Tooltips from the <c>tooltip</c> attribute or a <c>&lt;Tooltip&gt;</c> child, shown on hover or focus.</summary>
 public sealed class UiTooltipTests
 {
-    const string sheet = "Tooltip { background-color = #00ff00; width = 60; height = 20; delay = 0; }";
+    /// <summary>Text is transparent so platform-dependent glyphs never cover a probed pixel.</summary>
+    const string sheet =
+        "Tooltip { background-color = #00ff00; color = transparent; width = 60; height = 20; delay = 0; }";
 
     const string owner = """
         <UI><VisualElement tooltip="Hi" style="width: 100; height: 30; background-color: #333333" /></UI>
