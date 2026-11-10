@@ -3,13 +3,18 @@
 namespace Turian.Engine.UI;
 
 /// <summary>Gives hosts a <see cref="UiManager"/> without naming it, and renders single documents for previews.</summary>
-public sealed class UiManagerFactory : IUiPresenterFactory, IUiDocumentPreview
+public sealed class UiManagerFactory : IUiPresenterFactory
 {
     /// <inheritdoc/>
     public IUiPresenter Create(Vulkan vulkan, IInputSource? input, IServiceProvider? services) =>
         new UiManager(vulkan, input);
 
-    /// <inheritdoc/>
+    /// <summary>Renders a UI document to a PNG without a scene or graphics device.</summary>
+    /// <param name="documentPath">The document file.</param>
+    /// <param name="width">Image width in pixels.</param>
+    /// <param name="height">Image height in pixels.</param>
+    /// <param name="dataJson">Optional JSON object bound as the document's data.</param>
+    /// <returns>The PNG bytes.</returns>
     public byte[] RenderPng(string documentPath, int width, int height, string? dataJson)
     {
         var path = Path.GetFullPath(documentPath);

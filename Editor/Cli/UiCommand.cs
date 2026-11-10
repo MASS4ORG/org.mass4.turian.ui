@@ -1,7 +1,6 @@
 using System.CommandLine;
-using MASS4.Bricks;
 using Microsoft.Extensions.Logging;
-using Turian.Engine.Core;
+using Turian.Engine.UI;
 
 namespace Turian.Cli.UI;
 
@@ -47,8 +46,7 @@ public static class UiCommand
         };
         command.SetAction(result =>
         {
-            var preview = UiPresenters.FindPreview()
-                          ?? throw new PackageException("The in-game UI brick is not available.");
+            var preview = new UiManagerFactory();
             var dataFile = result.GetValue(dataFileOption);
             var data = dataFile is null ? result.GetValue(dataOption) : File.ReadAllText(dataFile);
             var width = result.GetValue(widthOption);

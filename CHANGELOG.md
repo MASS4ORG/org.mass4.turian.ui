@@ -4,6 +4,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+- Changed: UI document previews.
+
+## [2.0.0] - 2026-11-08
+
 - Added: Tooltip element #353.
 - Added: ProgressBar element #354.
 - Added: Slider, Dropdown and EnumDropdown #342.

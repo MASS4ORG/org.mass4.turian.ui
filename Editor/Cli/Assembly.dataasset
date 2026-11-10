@@ -4,5 +4,10 @@
     "RootNamespace":  "Turian.Cli.UI",
     "Id":  "922c5d3d-6ef2-4e8f-a6f4-e09522755d58",
     "EditorOnly":  true,
-    "AutoReferenced":  false
+    "AutoReferenced":  false,
+    "References": [
+        {
+            "AssetId": "11971431-4a1e-8187-e41e-9a08b6623bc8"
+        }
+    ]
 }

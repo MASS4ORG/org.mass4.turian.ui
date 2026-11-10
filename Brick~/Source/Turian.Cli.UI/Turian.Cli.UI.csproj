@@ -7,6 +7,7 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="../Turian.Engine.UI/Turian.Engine.UI.csproj" />
     <ProjectReference Include="$(TurianDir)Turian/Editor/Core/Turian.Editor.Core.csproj" />
     <ProjectReference Include="$(TurianDir)Turian/Editor/Cli.Sdk/Turian.Cli.Sdk.csproj" />
     <Compile Include="../../../Editor/Cli/**/*.cs" />
