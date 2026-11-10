@@ -1,6 +1,6 @@
 {
   "id": "org.mass4.turian.ui",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "displayName": "In-game UI",
   "description": "Guinevere-based .ui documents, .pss style sheets, data binding and screen and world-space panels.",
   "author": "MASS4",
@@ -14,10 +14,10 @@
   "nuget": {
     "MASS4.Guinevere": "6.6.0",
     "MASS4.Guinevere.Styling": "6.6.0",
-    "SkiaSharp": "4.154.0",
-    "SkiaSharp.NativeAssets.Linux": "4.154.0",
-    "SkiaSharp.NativeAssets.macOS": "4.154.0",
-    "SkiaSharp.NativeAssets.Win32": "4.154.0",
+    "SkiaSharp": "4.155.0",
+    "SkiaSharp.NativeAssets.Linux": "4.155.0",
+    "SkiaSharp.NativeAssets.macOS": "4.155.0",
+    "SkiaSharp.NativeAssets.Win32": "4.155.0",
     "SkiaSharp.Views.Desktop.Common": "4.153.1",
     "SkiaSharp.Vulkan.SharpVk": "4.153.1",
     "JetBrains.Annotations": "2026.2.0"
