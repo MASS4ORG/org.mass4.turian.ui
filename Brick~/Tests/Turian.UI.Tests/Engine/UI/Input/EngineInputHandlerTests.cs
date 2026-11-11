@@ -72,6 +72,47 @@ public sealed class EngineInputHandlerTests
         Assert.Equal(new Vector2(200, 80), handler.PrevMousePosition); // (100,40)/0.5
     }
 
+    /// <summary>
+    /// A tap clicks where the finger lifted, then the pointer leaves the screen, because a finger does not hover.
+    /// Frames run as the engine runs them: events, the input roll, then the interface pass.
+    /// </summary>
+    [Fact]
+    public void LiftedFinger_StopsHoveringAfterItsClick()
+    {
+        var tap = new Vector2(50, 60);
+        source.PushTouchDown(1, tap);
+        source.NewFrame();
+        Assert.Equal(tap, handler.MousePosition);
+        Assert.True(handler.IsMouseButtonDown(GMouseButton.Left));
+        handler.EndFrame();
+
+        source.PushTouchUp(1);
+        source.NewFrame();
+        Assert.Equal(tap, handler.MousePosition);
+        Assert.False(handler.IsMouseButtonDown(GMouseButton.Left));
+        handler.EndFrame();
+
+        source.NewFrame();
+        Assert.True(handler.MousePosition.X < -1000f);
+        Assert.Equal(Vector2.Zero, handler.MouseDelta);
+    }
+
+    /// <summary>A mouse keeps hovering where it rests after a click.</summary>
+    [Fact]
+    public void RestingMouse_KeepsHovering()
+    {
+        source.PushMouseMove(new Vector2(10, 20));
+        source.PushMouseDown(SilkMouseButton.Left);
+        source.NewFrame();
+        handler.EndFrame();
+        source.PushMouseUp(SilkMouseButton.Left);
+        source.NewFrame();
+        handler.EndFrame();
+        source.NewFrame();
+
+        Assert.Equal(new Vector2(10, 20), handler.MousePosition);
+    }
+
     /// <summary>Typed characters are reported until the frame ends, then cleared.</summary>
     [Fact]
     public void TypedCharacters_BufferClearsOnEndFrame()

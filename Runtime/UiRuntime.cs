@@ -17,6 +17,7 @@ public sealed class UiRuntime : IDisposable
     readonly IUiRenderBackend backend;
     readonly Font font;
     readonly Font iconFont;
+    readonly CanvasDisplay display = new();
     bool disposed;
 
     /// <summary>Creates a runtime with an initial surface size.</summary>
@@ -38,6 +39,7 @@ public sealed class UiRuntime : IDisposable
         backend = UiRenderBackendFactory.Create(vulkan, width, height, backendMode);
         this.input = input ?? new EngineInputHandler(inputSource);
         Gui.Input = this.input;
+        Gui.Platform.Register<IDisplayCapability>(display);
         font = Font.FromFamilyName("sans-serif", 16);
         iconFont = font;
     }
@@ -74,6 +76,7 @@ public sealed class UiRuntime : IDisposable
         backend.Resize(width, height);
         Gui.Time.Update(deltaTime);
         input.CanvasScale = canvasScale;
+        display.Update(width, height, canvasScale);
 
         backend.Render(canvas =>
         {
@@ -107,5 +110,23 @@ public sealed class UiRuntime : IDisposable
 
         disposed = true;
         backend.Dispose();
+    }
+
+    // Guinevere divides font sizes by the canvas scale unless the display reports the same factor, so text would
+    // keep its pixel size while everything else grows with the reference resolution.
+    sealed class CanvasDisplay : IDisplayCapability
+    {
+        public float ScaleFactor { get; private set; } = 1f;
+
+        public Vector2 LogicalSize { get; private set; }
+
+        public Vector2 FramebufferSize { get; private set; }
+
+        public void Update(int width, int height, float scale)
+        {
+            ScaleFactor = float.IsFinite(scale) && scale > 0f ? scale : 1f;
+            FramebufferSize = new Vector2(width, height);
+            LogicalSize = FramebufferSize / ScaleFactor;
+        }
     }
 }

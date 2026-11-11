@@ -61,14 +61,24 @@ public sealed class EngineInputHandler : IUiFrameInput
 
     float Inv => CanvasScale is > 0f and not 1f ? 1f / CanvasScale : 1f;
 
-    /// <inheritdoc/>
-    public Vector2 MousePosition => (source?.MousePosition ?? Vector2.Zero) * Inv;
+    // Where a lifted finger's pointer goes: a finger does not hover, so nothing stays highlighted after a tap.
+    static readonly Vector2 Away = new(-100_000f, -100_000f);
+
+    bool touchPointer;
+    bool leftWasDown;
+
+    // The frame after the press keeps the finger's position, because a click is decided where the finger lifted.
+    bool PointerAway => touchPointer && !leftWasDown && source is { Touches.Count: 0 }
+        && !source.IsMouseButtonDown(SilkMouseButton.Left);
 
     /// <inheritdoc/>
-    public Vector2 MouseDelta => (source?.MouseDelta ?? Vector2.Zero) * Inv;
+    public Vector2 MousePosition => PointerAway ? Away : (source?.MousePosition ?? Vector2.Zero) * Inv;
 
     /// <inheritdoc/>
-    public Vector2 PrevMousePosition => ((source?.MousePosition ?? Vector2.Zero) - (source?.MouseDelta ?? Vector2.Zero)) * Inv;
+    public Vector2 MouseDelta => PointerAway ? Vector2.Zero : (source?.MouseDelta ?? Vector2.Zero) * Inv;
+
+    /// <inheritdoc/>
+    public Vector2 PrevMousePosition => MousePosition - MouseDelta;
 
     /// <inheritdoc/>
     public float MouseWheelDelta => source?.MouseScrollDelta ?? 0f;
@@ -111,6 +121,28 @@ public sealed class EngineInputHandler : IUiFrameInput
     /// <param name="text">The characters typed since the previous frame.</param>
     public void SetTypedCharacters(string text) => typedCharacters = text;
 
-    /// <summary>Clears the per-frame typed-character buffer. Call after each Guinevere frame.</summary>
-    public void EndFrame() => typedCharacters = string.Empty;
+    /// <summary>
+    /// Clears the per-frame typed-character buffer and notes whether a finger or a mouse drives the pointer.
+    /// Call after each Guinevere frame.
+    /// </summary>
+    public void EndFrame()
+    {
+        typedCharacters = string.Empty;
+        if (source is null)
+        {
+            return;
+        }
+
+        var leftDown = source.IsMouseButtonDown(SilkMouseButton.Left);
+        if (source.Touches.Count > 0)
+        {
+            touchPointer = true;
+        }
+        else if (source.MouseDelta != Vector2.Zero && !leftDown && !leftWasDown)
+        {
+            touchPointer = false;
+        }
+
+        leftWasDown = leftDown;
+    }
 }

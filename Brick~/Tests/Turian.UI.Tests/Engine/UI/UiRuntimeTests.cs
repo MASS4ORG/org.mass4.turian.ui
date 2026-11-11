@@ -50,6 +50,20 @@ public sealed class UiRuntimeTests : IClassFixture<VulkanFixture>
         Assert.Equal(200u, tex.Width);
     }
 
+    /// <summary>Text grows with the canvas scale like every other size, instead of keeping its pixel size.</summary>
+    [Fact]
+    public void Render_WithCanvasScale_ScalesText()
+    {
+        Assert.SkipUnless(fixture.Available, fixture.SkipReason);
+
+        using var runtime = new UiRuntime(fixture.Vulkan, 200, 100);
+        var fontScale = 0f;
+
+        runtime.Render(gui => fontScale = gui.FontScale, 200, 100, deltaTime: 0f, canvasScale: 2.5f);
+
+        Assert.Equal(1f, fontScale, 0.001f);
+    }
+
     /// <summary>The manager builds enabled screen-space panels found in the scene in sort order.</summary>
     [Fact]
     public void RenderOverlay_InvokesPanelsInSortOrder()
