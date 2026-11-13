@@ -3,7 +3,8 @@ namespace Turian.Engine.UI;
 /// <summary>
 /// Finds the <see cref="UiDocumentComponent"/>s in a scene and composites the screen-space ones
 /// into a single texture. A host calls <see cref="RenderOverlay"/> once per rendered frame with
-/// the root being drawn, and assigns the result to the renderer's overlay slot.
+/// the root being drawn, and assigns the result to the renderer's overlay slot. It has the application's lifetime:
+/// the rendering host owns it for as long as its device lives, across gameplay sessions and scene loads.
 /// </summary>
 /// <remarks>
 /// World-space panels render to their own quads. The weak component registry avoids walking unrelated scene
