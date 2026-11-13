@@ -6,6 +6,24 @@ namespace Turian.Tests;
 /// </summary>
 public sealed class UiDocumentComponentTests
 {
+    /// <summary>A generated consumer component receives the UI base class's asset services.</summary>
+    [Fact]
+    public void DerivedComponentReceivesInheritedAssetServices()
+    {
+        var assets = new AssetDatabase();
+        var panel = new DerivedUiPanel();
+        var node = new Node();
+        node.AddComponent(panel);
+        node.Awake(null, new AssetServices(assets));
+        Assert.Same(assets, panel.Assets);
+        node.DestroyImmediate();
+    }
+
+    sealed class AssetServices(AssetDatabase assets) : IServiceProvider
+    {
+        public object? GetService(Type type) => type == typeof(AssetDatabase) ? assets : null;
+    }
+
     static JsonSerializerOptions Options()
     {
         TypeRegistry.ScanAssembly(typeof(UiDocumentComponent).Assembly);
@@ -51,3 +69,7 @@ public sealed class UiDocumentComponentTests
         Assert.DoesNotContain("OnBuild", json, StringComparison.Ordinal);
     }
 }
+
+/// <summary>A consumer subclass whose generated injector chains through the prebuilt UI component.</summary>
+
+public sealed class DerivedUiPanel : UiDocumentComponent;
