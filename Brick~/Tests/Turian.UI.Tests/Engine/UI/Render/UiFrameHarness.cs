@@ -8,6 +8,19 @@ sealed class UiFrameHarness
 {
     readonly Gui gui = new();
     readonly Font font = Font.FromFamilyName("sans-serif", 14);
+    UiNavigationInput? navigation;
+
+    /// <summary>The control currently receiving navigation input.</summary>
+    public string? FocusedId => gui.Focus.CurrentFocusedId;
+
+    /// <summary>Uses the real engine action bridge with a buffered device source.</summary>
+    public UiNavigationInput UseEngineInput(BufferedInputSource source, InputActionsAsset? actions = null)
+    {
+        navigation = new UiNavigationInput(new EngineInputHandler(source), source);
+        navigation.Load(actions);
+        gui.Platform.Register<ISemanticInputCapability>(navigation);
+        return navigation;
+    }
 
     /// <summary>Parses <paramref name="ui"/> and applies <paramref name="sheet"/> (PSS) when given.</summary>
     public UiFrameHarness(string ui, string? sheet = null, int width = 200, int height = 120)
@@ -57,7 +70,8 @@ sealed class UiFrameHarness
         var canvas = surface.Canvas;
         canvas.Clear(SKColors.Transparent);
 
-        gui.Input = input ?? Pointer(-1, -1);
+        navigation?.BeginFrame(Clock.Step, gui.Focus.IsTextInputFocused);
+        gui.Input = input ?? (IInputHandler?)navigation ?? Pointer(-1, -1);
         gui.SetStage(Pass.Pass1Build);
         gui.BeginFrame(canvas, font, font);
         Renderer.Render(gui);
@@ -66,6 +80,7 @@ sealed class UiFrameHarness
         Renderer.Render(gui);
         gui.Render();
         gui.EndFrame();
+        navigation?.EndFrame();
         canvas.Flush();
 
         using var snapshot = surface.Snapshot();

@@ -10,6 +10,12 @@ public sealed class UiDocument
     /// <summary>Fully-qualified <c>UiController</c> type from the root <c>controller</c> attribute, or <c>null</c>.</summary>
     public string? ControllerType { get; init; }
 
+    /// <summary>Name of the initially focused element, or null to focus the first available control.</summary>
+    public string? InitialFocus { get; init; }
+
+    /// <summary>Handler called for Cancel when no focused child or popup claims it.</summary>
+    public string? CancelHandler { get; init; }
+
     /// <summary><c>src</c> of each <c>&lt;Style&gt;</c>, in the order they should be applied.</summary>
     public List<string> StyleSheets { get; init; } = [];
 

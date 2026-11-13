@@ -19,6 +19,9 @@ public sealed class WorldPanelInputHandler : IUiFrameInput
     /// <summary>Creates a panel handler. Without a source all input is neutral.</summary>
     public WorldPanelInputHandler(IInputSource? source = null) => this.source = source;
 
+    /// <inheritdoc/>
+    public IInputSource? InputSource => source;
+
     /// <summary>Unused by world panels (they rasterise 1:1 with <c>PanelSize</c>); kept for the interface.</summary>
     public float CanvasScale { get; set; } = 1f;
 

@@ -45,6 +45,11 @@ public sealed partial class UiRenderer
 
                 DrawSliderParts(gui, area, ProgressBehavior.Fraction(next, min, max) ?? 0f, vertical);
             }
+            RegisterNavigation(gui, el, claimsArrowKeys: true);
+            if (enabled && gui.Pass == Pass.Pass2Render)
+            {
+                ExitSlider(gui, vertical);
+            }
         }
 
         if (next != current)

@@ -25,7 +25,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="$(BrickDir)../org.mass4.turian.ddd/Brick~/Source/Turian.Engine.DataAssetDriven/Turian.Engine.DataAssetDriven.csproj"/>
+        <ProjectReference Include="$(DddDir)Brick~/Source/Turian.Engine.DataAssetDriven/Turian.Engine.DataAssetDriven.csproj"/>
     </ItemGroup>
 
     <!-- Internal libraries -->

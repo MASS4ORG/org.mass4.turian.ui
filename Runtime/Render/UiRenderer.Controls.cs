@@ -51,7 +51,7 @@ public sealed partial class UiRenderer
             LogRect(gui, el, node);
             DrawBackground(gui, el);
 
-            var clicked = IsEnabled(el) && gui.Pass == Pass.Pass2Render && gui.GetInteractable().OnClick();
+            var clicked = Activate(gui, el);
             DrawLabel(gui, el, text);
 
             if (clicked)
@@ -112,6 +112,8 @@ public sealed partial class UiRenderer
         {
             LogRect(gui, el, node);
 
+            var clicked = Activate(gui, el);
+
             if (gui.Pass != Pass.Pass2Render)
             {
                 DrawLabel(gui, el, ResolveText(el) ?? string.Empty);
@@ -119,7 +121,6 @@ public sealed partial class UiRenderer
             }
 
             DrawButtonImage(gui, el, node.Rect, enabled, normal, hover, pressed, disabled);
-            var clicked = enabled && gui.GetInteractable().OnClick();
             DrawLabel(gui, el, ResolveText(el) ?? string.Empty);
 
             if (clicked)
@@ -188,6 +189,8 @@ public sealed partial class UiRenderer
             {
                 edit.IsFocused = false;
             }
+
+            RegisterNavigation(gui, el, claimsArrowKeys: true);
 
             DrawFieldText(gui, el, edit, placeholder);
             next = edit.Text;
@@ -301,7 +304,7 @@ public sealed partial class UiRenderer
             LogRect(gui, el, node);
             DrawBackground(gui, el);
 
-            var clicked = IsEnabled(el) && gui.Pass == Pass.Pass2Render && gui.GetInteractable().OnClick();
+            var clicked = Activate(gui, el);
             DrawToggleMark(gui, el, on);
             DrawLabel(gui, el, ResolveTextAttribute(el, "label") ?? string.Empty);
 

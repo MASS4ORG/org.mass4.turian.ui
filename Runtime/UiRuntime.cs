@@ -13,7 +13,7 @@ namespace Turian.Engine.UI;
 /// </remarks>
 public sealed class UiRuntime : IDisposable
 {
-    readonly IUiFrameInput input;
+    readonly UiNavigationInput input;
     readonly IUiRenderBackend backend;
     readonly Font font;
     readonly Font iconFont;
@@ -37,8 +37,9 @@ public sealed class UiRuntime : IDisposable
     {
         ArgumentNullException.ThrowIfNull(vulkan);
         backend = UiRenderBackendFactory.Create(vulkan, width, height, backendMode);
-        this.input = input ?? new EngineInputHandler(inputSource);
+        this.input = new UiNavigationInput(input ?? new EngineInputHandler(inputSource), inputSource);
         Gui.Input = this.input;
+        Gui.Platform.Register<ISemanticInputCapability>(this.input);
         Gui.Platform.Register<IDisplayCapability>(display);
         font = Font.FromFamilyName("sans-serif", 16);
         iconFont = font;
@@ -46,6 +47,9 @@ public sealed class UiRuntime : IDisposable
 
     /// <summary>The Guinevere context, for callers that need to read input/time or set scope values.</summary>
     public Gui Gui { get; } = new();
+
+    /// <summary>The action-driven keyboard/gamepad bridge; bindings may be customized through its action service.</summary>
+    public UiNavigationInput Navigation => input;
 
     /// <summary>The most recently rendered frame, or <c>null</c> before the first <see cref="Render"/>.</summary>
     public Texture? Texture => backend.Texture;
@@ -76,6 +80,7 @@ public sealed class UiRuntime : IDisposable
         backend.Resize(width, height);
         Gui.Time.Update(deltaTime);
         input.CanvasScale = canvasScale;
+        input.BeginFrame(deltaTime, Gui.Focus.IsTextInputFocused);
         display.Update(width, height, canvasScale);
 
         backend.Render(canvas =>

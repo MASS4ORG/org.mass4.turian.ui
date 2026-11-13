@@ -75,16 +75,26 @@ public sealed partial class UiRenderer
                 RenderElement(gui, child);
             }
 
-            if (gui.Pass == Pass.Pass2Render)
-            {
-                window.Update(gui, IsClosable(el), cancelClaims > claims);
-            }
+            UpdateWindowInput(gui, el, window, cancelClaims > claims);
         }
 
         if (window.Position != moved)
         {
             WriteBinding(el, "x", window.Position.X);
             WriteBinding(el, "y", window.Position.Y);
+        }
+    }
+
+    void UpdateWindowInput(Gui gui, UiElement el, WindowBehavior window, bool childClaimedCancel)
+    {
+        if (gui.Pass != Pass.Pass2Render)
+        {
+            return;
+        }
+        window.Update(gui, IsClosable(el), childClaimedCancel);
+        if (IsClosable(el) && gui.HasFocusWithin() && gui.IsCancelPressed)
+        {
+            cancelClaims++;
         }
     }
 

@@ -20,7 +20,7 @@ public sealed class UiDocumentAssetImporter : IAssetImporter
     ];
 
     /// <inheritdoc/>
-    public int Version => 1;
+    public int Version => 2;
 
     /// <inheritdoc/>
     public bool IsValid(string filePath) =>

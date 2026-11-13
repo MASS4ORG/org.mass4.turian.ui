@@ -71,13 +71,7 @@ public sealed partial class UiRenderer
         DropdownBehavior dropdown, bool enabled)
     {
         var chosen = selected >= 0 && selected < options.Count;
-        var modifiers = (dropdown.IsOpen, chosen) switch
-        {
-            (true, false) => openEmptyModifiers,
-            (true, true) => openModifiers,
-            (false, false) => emptyModifiers,
-            _ => [],
-        };
+        var modifiers = DropdownModifiers(dropdown.IsOpen, chosen);
         var node = gui.StyledNode(el.Tag, el.Classes, el.Name, modifiers: modifiers, disabled: !enabled);
         ApplyAttributeSize(node, el);
         UiStyleApplier.Apply(node, el.InlineStyle);
@@ -90,11 +84,25 @@ public sealed partial class UiRenderer
             {
                 dropdown.Button(gui, enabled, options.Count, selected);
                 DrawDropdownArrow(gui);
+                if (enabled && !dropdown.IsOpen)
+                {
+                    ExitDropdown(gui);
+                }
             }
+
+            RegisterNavigation(gui, el, claimsArrowKeys: true);
 
             DrawLabel(gui, el, chosen ? options[selected].Label : ResolveTextAttribute(el, "placeholder") ?? string.Empty);
         }
     }
+
+    static string[] DropdownModifiers(bool open, bool chosen) => (open, chosen) switch
+    {
+        (true, false) => openEmptyModifiers,
+        (true, true) => openModifiers,
+        (false, false) => emptyModifiers,
+        _ => []
+    };
 
     /// <summary>The <c>arrow</c> part at the end of the button, drawn only when its rule gives it a size.</summary>
     static void DrawDropdownArrow(Gui gui)

@@ -34,7 +34,7 @@ public class UiDocumentComponent : Component
 
     static bool IsUnderRoot(Node node, Node root)
     {
-        for (Node? current = node; current is not null; current = current.Parent)
+        for (var current = node; current is not null; current = current.Parent)
         {
             if (!current.IsActive) { return false; }
             if (ReferenceEquals(current, root)) { return true; }
@@ -77,6 +77,13 @@ public class UiDocumentComponent : Component
 
     /// <summary>The <c>.ui</c> document this panel renders. Empty when the UI is supplied via <see cref="OnBuild"/>.</summary>
     public AssetReference<UiDocumentAsset> Document { get; set; } = new();
+
+    /// <summary>Optional input asset defining the UI action map; empty uses the standard keyboard/gamepad bindings.</summary>
+    public DataAssetReference<InputActionsAsset> NavigationActions { get; set; } = new();
+
+    /// <summary>Loads the panel's authored navigation map in source projects and exported content.</summary>
+    [InjectService(Optional = true), JsonIgnore, Hide]
+    public IAssetLoader? AssetLoader { get; set; }
 
     /// <summary>Hydrated variable and event assets available to asset://GUID bindings in this document.</summary>
     public List<DataAsset> DataAssets { get; set; } = [];

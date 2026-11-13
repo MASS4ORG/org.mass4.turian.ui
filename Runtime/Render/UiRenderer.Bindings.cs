@@ -155,7 +155,12 @@ public sealed partial class UiRenderer
             return string.Empty;
         }
 
-        return gui.ResolveStyle(el.Tag, el.Classes, el.Name).Get(name) ?? string.Empty;
+        var visualState = gui.HasFocus() ? StyleState.Focus : StyleState.None;
+        if (!IsEnabled(el))
+        {
+            visualState |= StyleState.Disabled;
+        }
+        return gui.ResolveStyle(el.Tag, el.Classes, el.Name, state: visualState).Get(name) ?? string.Empty;
     }
 
     string StateKey(UiElement el, string kind) =>

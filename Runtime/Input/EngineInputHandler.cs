@@ -23,6 +23,9 @@ namespace Turian.Engine.UI;
 /// </summary>
 public interface IUiFrameInput : IInputHandler
 {
+    /// <summary>Engine devices available to action navigation, or null for a custom pointer-only handler.</summary>
+    IInputSource? InputSource => null;
+
     /// <summary>Canvas scale the UI is rasterised at (pointer coords are divided by it).</summary>
     float CanvasScale { get; set; }
 
@@ -42,6 +45,9 @@ public sealed class EngineInputHandler : IUiFrameInput
 
     /// <summary>Creates a screen-space handler. Without a source all input is neutral.</summary>
     public EngineInputHandler(IInputSource? source = null) => this.source = source;
+
+    /// <inheritdoc/>
+    public IInputSource? InputSource => source;
 
     /// <summary>
     /// The canvas scale the UI is currently rasterized at (<see cref="UiScale"/>). Pointer

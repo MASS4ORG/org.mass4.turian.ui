@@ -11,7 +11,7 @@ public static class UiXmlParser
 
     static readonly HashSet<string> EventAttributes = new(StringComparer.OrdinalIgnoreCase)
     {
-        "click", "value-changed", "changed", "submit", "activated", "selection-changed", "close",
+        "click", "value-changed", "changed", "submit", "activated", "selection-changed", "close", "cancel",
     };
 
     /// <summary>Parses <paramref name="xml"/> into a document.</summary>
@@ -92,7 +92,9 @@ public static class UiXmlParser
 
         return new UiDocument
         {
-            ControllerType = root.Attribute("controller")?.Value,
+            ControllerType = OptionalAttribute(root, "controller"),
+            InitialFocus = OptionalAttribute(root, "initial-focus"),
+            CancelHandler = OptionalAttribute(root, "cancel"),
             StyleSheets = styleSheets,
             Templates = templates,
             Root = visualRoot,
@@ -310,6 +312,8 @@ public static class UiXmlParser
     static string RequireAttr(XElement el, string name) =>
         el.Attribute(name)?.Value
         ?? throw Fail(el, $"<{el.Name.LocalName}> requires a '{name}' attribute");
+
+    static string? OptionalAttribute(XElement el, string name) => el.Attribute(name)?.Value;
 
     static int LineOf(XElement el) => el is IXmlLineInfo li && li.HasLineInfo() ? li.LineNumber : 0;
 

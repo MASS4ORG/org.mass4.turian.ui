@@ -108,6 +108,7 @@ public sealed class UiManager : IUiPresenter
                                $"raster {scale.PixelWidth}x{scale.PixelHeight} canvasScale {scale.CanvasScale:0.###}");
 
         overlayRuntime ??= new UiRuntime(vulkan, scale.PixelWidth, scale.PixelHeight, inputSource: inputSource);
+        overlayRuntime.Navigation.Load(ResolveNavigationActions(panels[^1]));
 
         var texture = overlayRuntime.Render(
             gui =>
@@ -167,6 +168,7 @@ public sealed class UiManager : IUiPresenter
                 continue;
             }
 
+            wp.Runtime.Navigation.Load(ResolveNavigationActions(panel));
             var texture = wp.Runtime.Render(build, pw, ph, frame.DeltaTime);
             quads.Add(new WorldUiQuad(texture, model));
         }
@@ -235,6 +237,10 @@ public sealed class UiManager : IUiPresenter
         var d = (panelNode.GlobalTransform.Position - camera.Position).Length();
         return d <= raycaster.MaxDistance;
     }
+
+    static InputActionsAsset? ResolveNavigationActions(UiDocumentComponent panel) =>
+        panel.AssetLoader is { } loader
+            ? panel.NavigationActions.LoadContentAsync(loader).GetAwaiter().GetResult() : null;
 
     // Logs each distinct state line once per manager lifetime, so a per-frame call site is silent
     // in steady state. Set TURIAN_UI_DIAG=0 to silence entirely.

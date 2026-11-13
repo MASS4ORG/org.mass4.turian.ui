@@ -31,8 +31,11 @@ public sealed class UiDocumentAssetImporterTests
         using var dir = new TempDir();
         var source = dir.Write("menu.ui",
             """
-            <UI xmlns="https://turian.mass4.org/ui">
-              <VisualElement name="root"><Label text="Hi" /></VisualElement>
+            <UI xmlns="https://turian.mass4.org/ui" initial-focus="play" cancel="OnBack">
+              <VisualElement name="root">
+                <Button name="play" focus-down="options">Play</Button>
+                <Button name="options">Options</Button>
+              </VisualElement>
             </UI>
             """);
         var importDir = dir.Sub("import");
@@ -43,6 +46,9 @@ public sealed class UiDocumentAssetImporterTests
         Assert.EndsWith(".amui", baked, StringComparison.Ordinal);
         var document = UiDocument.FromJson(File.ReadAllText(baked));
         Assert.Equal("root", document.Root.Name);
+        Assert.Equal("play", document.InitialFocus);
+        Assert.Equal("OnBack", document.CancelHandler);
+        Assert.Equal("options", document.Find("play")!.Attributes["focus-down"]);
     }
 
     /// <summary>Malformed XML bakes an empty document instead of throwing.</summary>

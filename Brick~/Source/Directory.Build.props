@@ -4,6 +4,7 @@
         <TurianDir Condition="'$(TurianDir)' == ''">$(MSBuildThisFileDirectory)../../../../Turian/</TurianDir>
         <TurianDir>$([MSBuild]::NormalizeDirectory('$(TurianDir)'))</TurianDir>
         <BrickDir>$([MSBuild]::NormalizeDirectory('$(MSBuildThisFileDirectory)../..'))</BrickDir>
+        <DddDir Condition="'$(DddDir)' == ''">$(BrickDir)../org.mass4.turian.ddd/</DddDir>
     </PropertyGroup>
 
     <Import Project="$(TurianDir)Directory.Build.props"/>

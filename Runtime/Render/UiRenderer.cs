@@ -184,6 +184,9 @@ public sealed partial class UiRenderer
     {
         ArgumentNullException.ThrowIfNull(gui);
         autoKey = 0;
+        cancelClaims = 0;
+        navigationControls.Clear();
+        navigationNames.Clear();
 
         gui.StyleSheets.Clear();
         foreach (var sheet in StyleSheets)
@@ -192,6 +195,7 @@ public sealed partial class UiRenderer
         }
 
         RenderElement(gui, document.Root);
+        FinishNavigation(gui);
         if (gui.Pass == Pass.Pass2Render && focusExit is { } direction)
         {
             focusExit = null;
@@ -272,6 +276,7 @@ public sealed partial class UiRenderer
         {
             LogRect(gui, el, node);
             DrawBackground(gui, el);
+            RegisterNavigation(gui, el, defaultFocusable: false);
             foreach (var child in el.Children)
             {
                 RenderElement(gui, child);
@@ -342,6 +347,7 @@ public sealed partial class UiRenderer
         {
             LogRect(gui, el, node);
             DrawBackground(gui, el);
+            gui.RegisterFocusable(canReceiveFocus: false, isInteractable: false);
 
             next = RenderTabStrip(gui, el, tabs, active);
 
@@ -364,12 +370,25 @@ public sealed partial class UiRenderer
         var next = active;
         using (gui.StyledNode("TabStrip", el.Classes).Direction(Axis.Horizontal).Enter())
         {
+            gui.RegisterFocusable(canReceiveFocus: false, isInteractable: false);
             for (var t = 0; t < tabs.Count; t++)
             {
                 if (RenderTabHeader(gui, tabs[t], t, t == active))
                 {
                     next = t;
                 }
+            }
+        }
+
+        if (gui.Pass == Pass.Pass2Render && gui.HasFocusWithin())
+        {
+            if (gui.IsSemanticActionPressed(SemanticAction.PreviousTab))
+            {
+                next = (active + tabs.Count - 1) % tabs.Count;
+            }
+            else if (gui.IsSemanticActionPressed(SemanticAction.NextTab))
+            {
+                next = (active + 1) % tabs.Count;
             }
         }
 
@@ -385,7 +404,7 @@ public sealed partial class UiRenderer
 
         using (node.Enter())
         {
-            var clicked = gui.Pass == Pass.Pass2Render && gui.GetInteractable().OnClick();
+            var clicked = Activate(gui, tab);
             DrawLabel(gui, tab, ResolveTextAttribute(tab, "header") ?? $"Tab {index + 1}");
             return clicked;
         }
