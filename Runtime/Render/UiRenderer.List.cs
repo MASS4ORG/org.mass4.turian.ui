@@ -48,6 +48,7 @@ public sealed partial class UiRenderer
 
         using (node.Enter())
         {
+            collectionFocusOwners.Add(node.Id);
             LogRect(gui, el, node);
             gui.ScrollY();
             DrawBackground(gui, el);

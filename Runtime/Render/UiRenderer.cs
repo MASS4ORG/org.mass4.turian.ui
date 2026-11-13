@@ -186,6 +186,7 @@ public sealed partial class UiRenderer
         autoKey = 0;
         cancelClaims = 0;
         navigationControls.Clear();
+        collectionFocusOwners.Clear();
         navigationNames.Clear();
 
         gui.StyleSheets.Clear();

@@ -202,6 +202,43 @@ public sealed class UiNavigationTests
         Assert.Equal(1, clicks);
     }
 
+    /// <summary>Escape and controller Cancel bubble out of a focused virtualized row.</summary>
+    [Theory]
+    [InlineData("List", false)]
+    [InlineData("Grid", false)]
+    [InlineData("List", true)]
+    [InlineData("Grid", true)]
+    public void CollectionRowsReturnCancelToTheirOwnDocument(string tag, bool gamepad)
+    {
+        var source = new BufferedInputSource();
+        var ui = new UiFrameHarness($$"""
+            <UI cancel="Back"><{{tag}} name="items" items="{Names}">
+              <Label text="{item}" />
+            </{{tag}}></UI>
+            """, "List, Grid { width = 180; height = 100; item-height = 30; cell-height = 30; }");
+        ui.Renderer.Bind(new { Names = new[] { "First", "Second" } });
+        ui.UseEngineInput(source);
+        var cancelled = 0;
+        ui.Renderer.Handlers["Back"] = () => cancelled++;
+        ui.Frame();
+        source.PushMouseMove(new Vector2(20, 15));
+        source.PushMouseDown(SilkMouseButton.Left);
+        ui.Frame();
+        source.NewFrame();
+        source.PushMouseUp(SilkMouseButton.Left);
+        ui.Frame();
+        Assert.NotNull(ui.FocusedId);
+        if (gamepad)
+        {
+            Press(source, ui, GamepadButton.East);
+        }
+        else
+        {
+            Press(source, ui, Key.Escape);
+        }
+        Assert.Equal(1, cancelled);
+    }
+
     sealed class Settings
     {
         /// <summary>The bound toggle value.</summary>

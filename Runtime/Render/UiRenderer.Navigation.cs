@@ -3,6 +3,7 @@ namespace Turian.Engine.UI;
 public sealed partial class UiRenderer
 {
     readonly List<(UiElement Element, string Id)> navigationControls = [];
+    readonly HashSet<string> collectionFocusOwners = new(StringComparer.Ordinal);
     readonly Dictionary<string, string> navigationNames = new(StringComparer.Ordinal);
     static readonly (FocusDirection Direction, string Attribute)[] directionAttributes =
     [
@@ -67,7 +68,8 @@ public sealed partial class UiRenderer
     void CancelDocument(Gui gui)
     {
         if (gui.IsCancelPressed && cancelClaims == 0
-            && navigationControls.Exists(control => gui.HasFocus(control.Id))
+            && (navigationControls.Exists(control => gui.HasFocus(control.Id))
+                || collectionFocusOwners.Any(gui.HasFocusWithin))
             && document.CancelHandler is { } handler && Handlers.TryGetValue(handler, out var cancel))
         {
             cancel();
