@@ -4,10 +4,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
-- Fixed: prebuilt UI components emit lifecycle and service metadata for derived game components.
+## [2.2.2] - 2026-11-08
 
-- Added: keyboard/gamepad UI navigation, including document Cancel from List/Grid rows #71.
+- Fixed: lifecycle and service metadata.
+
+## [2.2.1]
+
+- Added: keyboard/gamepad UI navigation #71.
 - Changed: UI document previews.
+- Fixed: lifecycle and service metadata.
 
 ## [2.0.0] - 2026-11-08
 

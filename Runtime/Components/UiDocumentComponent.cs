@@ -79,7 +79,11 @@ public class UiDocumentComponent : Component
     public AssetReference<UiDocumentAsset> Document { get; set; } = new();
 
     /// <summary>Optional input asset defining the UI action map; empty uses the standard keyboard/gamepad bindings.</summary>
-    public DataAssetReference<InputActionsAsset> NavigationActions { get; set; } = new();
+    public DataAssetReference<InputActionsAsset> NavigationActions
+    {
+        get;
+        set => field = value ?? new();
+    } = new();
 
     /// <summary>Loads the panel's authored navigation map in source projects and exported content.</summary>
     [InjectService(Optional = true), JsonIgnore, Hide]

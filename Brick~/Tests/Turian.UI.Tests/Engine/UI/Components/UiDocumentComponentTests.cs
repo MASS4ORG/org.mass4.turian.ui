@@ -24,6 +24,16 @@ public sealed class UiDocumentComponentTests
         public object? GetService(Type type) => type == typeof(AssetDatabase) ? assets : null;
     }
 
+    /// <summary>An empty navigation reference remains usable when the engine clones a scene.</summary>
+    [Fact]
+    public void DefaultNavigationSurvivesSceneClone()
+    {
+        var original = new UiDocumentComponent();
+        var copy = Serializer.LoadData<UiDocumentComponent>(Serializer.Serialize(original))!;
+        Assert.NotNull(copy.NavigationActions);
+        Assert.True(copy.NavigationActions.IsEmpty);
+    }
+
     static JsonSerializerOptions Options()
     {
         TypeRegistry.ScanAssembly(typeof(UiDocumentComponent).Assembly);

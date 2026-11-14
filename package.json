@@ -1,6 +1,6 @@
 {
   "id": "org.mass4.turian.ui",
-  "version": "2.1.1",
+  "version": "2.2.2",
   "displayName": "In-game UI",
   "description": "Guinevere-based .ui documents, .pss style sheets, data binding and screen and world-space panels.",
   "author": "MASS4",
